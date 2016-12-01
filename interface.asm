@@ -1,14 +1,14 @@
 .data
 
-    listX: .word 0, 32, 64, 96, 128, 160, 192, 228, 260, 292, 328, 360, 392, 428, 460, 496, 0, 32, 64, 96, 128, 160, 192, 228, 260, 292, 328, 360, 392, 428, 460, 496, 0, 32, 64, 96, 128, 160, 192, 228, 260, 292, 328, 360, 392, 428, 460, 496, 0, 32, 64, 96, 128, 160, 192, 228, 260, 292, 328, 360, 392, 428, 460, 496, 0, 32, 64, 96, 128, 160, 192, 228, 260, 292, 328, 360, 392, 428, 460, 496, 0, 32, 64, 96, 128, 160, 192, 228, 260, 292, 328, 360, 392, 428, 460, 496, 0, 32, 64, 96, 128, 160, 192, 228, 260, 292, 328, 360, 392, 428, 460, 496
-    listY: .word 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 72, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 84, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 96, 108, 108, 108, 108, 108, 108, 108, 108, 108, 108, 108, 108, 108, 108, 108, 108, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132, 132
-    listB: .word 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+    listX: .word -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449
+    listY: .word 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134
+    listB: .word 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
     
 .text
 
 Inicializa:
     
-    li $v1, 0                       # Detecta se o jogo já começou
+    li $v1, 0                       # Detecta se o jogo jï¿½ comeï¿½ou
     
     addi $sp, $sp, -28              # Adiciona espaco na pilha para os parametros a serem passados para as funcoes de desenho (economizando registradores)
     
@@ -37,38 +37,38 @@ Inicializa:
     sw $t8, 24($sp)                 # Adiciona a cor t8 para a pilha
     jal InicializaRetangulos        # Desenha os Retangulos
     
-    j loop9                         # Inicia o jogo
+    j end                         # Inicia o jogo
 
     
 AcessaLX:
 
-    la $t1, listX        # coloca o entereço em $t3
+    la $t1, listX        # coloca o entereï¿½o em $t3
     move $t2, $k0	 # coloca o indice em $t2
     add $t2, $t2, $t2    # dobra o indice
     add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
-    add $t1, $t2, $t1    # Combina os 2 componentes do endereço
+    add $t1, $t2, $t1    # Combina os 2 componentes do endereï¿½o
     lw $t4, 0($t1)       # pega o valor na celula de listX
-    move $ra, $t4	 # passa t4 (valor no indice do vetor) para RA
+    move $s4, $t4	 # passa t4 (valor no indice do vetor) para RA
     jr $ra		 #retorna RA
 
 AcessaLY:
 
-    la $t1, listY        # coloca o entereço em $t3			
-    move $t2, $k0	 # coloca o indice em $t2
+    la $t1, listY        # coloca o entereï¿½o em $t3			
+    move $t2, $k1	 # coloca o indice em $t2
     add $t2, $t2, $t2    # dobra o indice
     add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
-    add $t1, $t2, $t1    # Combina os 2 componentes do endereço
+    add $t1, $t2, $t1    # Combina os 2 componentes do endereï¿½o
     lw $t4, 0($t1)       # pega o valor na celula de listY
-    move $ra, $t4	 # passa t4 (valor no indice do vetor) para RA
+    move $s2, $t4	 # passa t4 (valor no indice do vetor) para RA
     jr $ra		 #retorna RA
     
 AcessaLB:
 
-    la $t1, listB        # coloca o entereço em $t3
+    la $t1, listB        # coloca o entereï¿½o em $t3
     move $t2, $k0	 # coloca o indice em $t2
     add $t2, $t2, $t2    # dobra o indice
     add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
-    add $t1, $t2, $t1    # Combina os 2 componentes do endereço
+    add $t1, $t2, $t1    # Combina os 2 componentes do endereï¿½o
     lw $t4, 0($t1)       # pega o valor na celula de listB
     move $ra, $t4	 # passa t4 (valor no indice do vetor) para RA
     jr $ra		 #retorna RA
@@ -81,71 +81,62 @@ AcessaLB:
 InicializaRetangulos:
 
     lw   $a2, 24($sp)                # Carregando a cor que esta pilha para os retangulos
+    li $k0, 0
+    li $k1, 0   
+    #la   $t3, listX		     # carrega lista listX em t3
+    #li   $t2, 0			     # coloca posicao 0 em t2
+    #add  $t1, $t2, $t3		     # combina os dois elementos para acesso
+    #move $s2, $t1	             # y0 = y posicao inicial de y
+    #li $k0, 0
+    jal AcessaLY
+    #move $s2, $ra
     
-    la   $t3, listX		     # carrega lista listX em t3
-    li   $t2, 0			     # coloca posicao 0 em t2
-    add  $t1, $t2, $t3		     # combina os dois elementos para acesso
-    move $s2, $t1	             # y0 = y posicao inicial de y
     
-    la   $t3, listY		     # carrega a lista listY em t3
-    li   $t2, 0			     # coloca a posicao 0 em t2
-    add  $t1, $t2, $t3    	     # combina os dois elementos para acesso
-    move $s3, $t1 	             # x0 = x posicao inicial de x
+    #la   $t3, listY		     # carrega a lista listY em t3
+    #li   $t2, 0			     # coloca a posicao 0 em t2
+    #add  $t1, $t2, $t3    	     # combina os dois elementos para acesso
+    #move $s3, $t1 	             # x0 = x posicao inicial de x
+    jal AcessaLX
+    #move $s4, $ra
 
-    move $s4, $s3                    # posicao inicial do x que sera deslocado
+    #move $s3, $s4                    # posicao inicial do x que sera deslocado
 
-    addi $t8, $s3, 545               # posicao final do retangulo em x
-    addi $t9, $s2, 90                # posicao final do retangulo em y
+    li $t8, 450               # posicao final do retangulo em x
+    li $t9, 134                # posicao final do retangulo em y
 
     addi $t4, $s2, 96                # define a fileira que irei mudar para a cor verde
     addi $t5, $s2, 132               # define a fileira que irei mudar para a cor azul
 
 loop3:
     jal  AcessaLX
-    li   $k0, 0			     # inicia o contador para Y
-    move $t6, $ra		     # move o retorno de AcessaLX
-    add $s4, $s4, $t6               # Adiciona no inicio do proximo retangulo (em x)
-    
-    blt  $s4, $t8, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
-    
-    addi $k0, $zero, 1 		     # incrementa o contador /*/
-    
-    j    loop4                       # Se chegou no final va para a proxima fileira
-    
-    
-loop4:
     jal AcessaLY
-    move $t6, $ra		     # Move o retorno de AcessaL
-    add $s2, $s2, $t6	             # Adiciona no inicio do proximo retangulo (em y)
-    
-    move $s4, $s3                    # Reseta o x inicial do retangulo para o x0
-    
-    bge  $s2, $t4, MudaCorVerde      # Muda a cor dos retangulos para ou verde ou azul
-    
-    blt  $s2, $t9, DesenhaRetangulo  # Enquanto nao chegar no final das fileiras continue desenhando retangulos
+    addi $k0, $k0, 1
+    addi $k1, $k1, 1
+    bge  $s2, 78, MudaCorVerde  
+    ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
+    j loop9                         # Inicia o programa
 
-    jr   $ra                         # Se chegou retorna pra quem chamou
     
 MudaCorVerde:
-    beq $a2, 0x00000000, NaoMudaCor  # Caso seja final de jogo o valor de a2 sera preto
+    #beq $a2, 0x00000000, NaoMudaCor  # Caso seja final de jogo o valor de a2 sera preto
     
     li  $a2, 0x0000FF00              # Muda $a2 para verde
     
-    bge $s2, $t5, MudaCorAzul        # Muda a cor dos retangulos para azul
+    bge $s2, 106, MudaCorAzul        # Muda a cor dos retangulos para azul
     
-    blt $s2, $t9, DesenhaRetangulo   # Enquanto nao chegar no final das fileiras continue desenhando retangulos
-    jr  $ra                          # Se chegou va desenhar a barra
+    ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
+    j loop9                         # Inicia o programa
     
     
 MudaCorAzul:
 
     li  $a2, 0x000000FF              # Muda $a2 para azul
     
-    blt $s2, $t9, DesenhaRetangulo   # Enquanto nao chegar no final das fileiras continue desenhando retangulos
-    jr  $ra                          # Se chegou va desenhar a barra
+    ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
+    j loop9                        # Inicia o programa
     
 NaoMudaCor:
-   blt $s2, $t9, DesenhaRetangulo    # Enquanto nao chegar no final das fileiras continue desenhando retangulos
+   blt $k1, 7, DesenhaRetangulo    # Enquanto nao chegar no final das fileiras continue desenhando retangulos
    jr  $ra                           # Se chegou va desenhar a barra
     
 
@@ -158,15 +149,12 @@ DesenhaRetangulo:
  
     addi $t2, $s0, 28                # Posicao final de x
     addi $t1, $s1, 10                # Posicao final de y
-
-    j    loop
     
 
 loop:
 
    blt  $s0, $t2, DrawPixel          # Enquanto x1 ainda nao atingiu o limite (t0) pinte o pixel (s0,s1)
    addi $s1, $s1, 1                  # Quando x1 chegar no limite (t0) adiciona 1 em y1 (pula linha)
-   j loop2
    
  
 loop2:
@@ -281,11 +269,11 @@ DrawPixel4:
 #############Detecta a entrada###########
 DetectaEntrada:
     
-    beq $v0, ' ', DetectaInicio      # Enquanto $a3 for igual a 'espaço' mova a bolinha
+    beq $v0, ' ', DetectaInicio      # Enquanto $a3 for igual a 'espaï¿½o' mova a bolinha
     beq $v0, 'a', MoverEsquerda      # Se for 'a' eh para mover a barra para a esquerda
     beq $v0, 'd', MoverDireita       # Se for 'd' tambem move a barra para a direita
     beq $v0, 'e', LimpaTela          # Teste para ver se o jogo eh restartado direitinho
-    j   loop9                        # Se nao for nem 'a', 'd' ou 'espaço' va para o loop
+    j   loop9                        # Se nao for nem 'a', 'd' ou 'espaï¿½o' va para o loop
     
 ############Move a bolinha#####################
 MoverBola:
@@ -300,8 +288,8 @@ MoverBola:
     lw   $t8, 16($sp)                # Pega o valor de y da bolinha
     lw   $t7, 20($sp)                # Pega o valor de x da bolinha
     
-    addi $t8,$t8,-5		     # soma a posição em y	
-    addi $t7,$t7,-5		     # soma a posição em x
+    addi $t8,$t8,-5		     # soma a posiï¿½ï¿½o em y	
+    addi $t7,$t7,-5		     # soma a posiï¿½ï¿½o em x
     blt $t8,37,MoverBolaDown         # Se a bola chegar em y na posicao 37 muda o movimento
     blt $t7,-60,MoverBolaUp          # Se a bola chegar em x na posicao -60 muda o movimento
           
@@ -327,8 +315,8 @@ MoverBolaUp:
     lw   $t8, 16($sp)                # Pega o valor de y da bolinha
     lw   $t7, 20($sp)                # Pega o valor de x da bolinha
     
-    addi $t8,$t8,-5		     # soma a posição em y	
-    addi $t7,$t7,5		     # soma a posição em x
+    addi $t8,$t8,-5		     # soma a posiï¿½ï¿½o em y	
+    addi $t7,$t7,5		     # soma a posiï¿½ï¿½o em x
     blt $t8,37,MoverBolaDown	     # Verifica se a bolinha atingiu o chao
     bgt $t7,429,MoverUp2		     # Verifica se a bolinha atingiu o limite da tela a direita
 
@@ -415,8 +403,8 @@ MoverUp2:
     lw   $t8, 16($sp)                # Pega o valor de y da bolinha
     lw   $t7, 20($sp)                # Pega o valor de x da bolinha
     
-    addi $t8,$t8,-5		     # soma a posição em y	
-    addi $t7,$t7,-5		     # soma a posição em x
+    addi $t8,$t8,-5		     # soma a posiï¿½ï¿½o em y	
+    addi $t7,$t7,-5		     # soma a posiï¿½ï¿½o em x
     blt $t8,37,MoverDown2
     bgt $t7,429,MoverUp2
     blt $t7,-70,MoverBolaUp 
@@ -497,7 +485,7 @@ MoverDireita:
 
 #############Verifica se o jogo ja comecou##########
 DetectaInicio:
-    beq $v1, 0, SetaInicio          # Se o jogo ainda nao começou entao va setar $v1 para 1 e iniciar o jogo
+    beq $v1, 0, SetaInicio          # Se o jogo ainda nao comeï¿½ou entao va setar $v1 para 1 e iniciar o jogo
     j loop9
     
 SetaInicio:
@@ -527,7 +515,7 @@ LimpaTela:
     sw $t8, 24($sp)                  # Adiciona a cor t8 para a pilha
     jal InicializaRetangulos         # Desenha os Retangulos
     
-    addi $sp, $sp, 28                # Desaloca espaço na pilha
+    addi $sp, $sp, 28                # Desaloca espaï¿½o na pilha
     
     j Inicializa                     # Restarta o jogo
     
