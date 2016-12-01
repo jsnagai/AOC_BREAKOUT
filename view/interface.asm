@@ -220,18 +220,23 @@ DrawPixel4:
     
 #############Detecta a entrada###########
 DetectaEntrada:
-    lw  $v0, 4($t0)
-    beq $v0, ' ', DetectaInicio      # Enquanto $a3 for igual a 'espaço' mova a bolinha
-    beq $v0, 'a', MoverEsquerda      # Se for 'a' eh para mover a barra para a esquerda
-    beq $v0, 'd', MoverDireita       # Se for 'd' tambem move a barra para a direita
-    beq $v0, 'e', LimpaTela          # Teste para ver se o jogo eh restartado direitinho
-    jr $ra                           # Se nao for nem 'a', 'd' ou 'espaço' va para o loop
+    lw $a3, 4($t0)                   # Guarda o valor digitado
+    move $a1, $ra                    # Guarda o endereço de quem chamou
+    beq $a3, 'a', MoverEsquerda      # Se for 'a' eh para mover a barra para a esquerda
+    beq $a3, 'd', MoverDireita       # Se for 'd' tambem move a barra para a direita
+    beq $a3, 'e', LimpaTela          # Teste para ver se o jogo eh restartado direitinho
+    jr $a1                           # Se nao for nem 'a', 'd' ou 'e' volta pra quem chamou
     
 ############Move a bolinha#####################
 MoverBola:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
+    li $t0, 0xffff0000
+    lw $t1, ($t0)
+    andi $t1, $t1, 0x0001
+    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
+    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -251,7 +256,6 @@ MoverBola:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
-    jal loop9
     j MoverBola
 
 ############Move a bolinha Up #####################
@@ -259,6 +263,11 @@ MoverBolaUp:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
+    li $t0, 0xffff0000
+    lw $t1, ($t0)
+    andi $t1, $t1, 0x0001
+    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
+    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -280,7 +289,6 @@ MoverBolaUp:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
-    jal loop9
     j MoverBolaUp
    
             
@@ -289,6 +297,11 @@ MoverBolaDown:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
+    li $t0, 0xffff0000
+    lw $t1, ($t0)
+    andi $t1, $t1, 0x0001
+    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
+    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -311,13 +324,17 @@ MoverBolaDown:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
-    jal loop9
     j MoverBolaDown
 
 MoverDown2:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
+    li $t0, 0xffff0000
+    lw $t1, ($t0)
+    andi $t1, $t1, 0x0001
+    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
+    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -339,7 +356,6 @@ MoverDown2:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
-    jal loop9
     j MoverDown2    
     
 
@@ -347,6 +363,11 @@ MoverUp2:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
+    li $t0, 0xffff0000
+    lw $t1, ($t0)
+    andi $t1, $t1, 0x0001
+    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
+    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -367,7 +388,6 @@ MoverUp2:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
-    jal loop9
     j MoverUp2 
                   
            
@@ -396,11 +416,16 @@ verifica:
 	blt $t7, $t2,MoverUp2
 	j stope 
     
+
+AlcancouLimite:
+    jr $a1
+
+
 #############Move a barra Para a Esquerda#######
 MoverEsquerda:
     
     lw   $t5, 8($sp)                 # Pega o valor de y da barra
-    blt  $t5, -55, loop9             # Se chegou no limite da tela pela esquerda nao mova
+    blt  $t5, -55, AlcancouLimite    # Se chegou no limite da tela pela esquerda nao mova
     
     li $t6, 0x00000000               # Adiciona a cor preta em t8
     sw $t6, 0($sp)                   # Adiciona t8 para a pilha
@@ -413,13 +438,13 @@ MoverEsquerda:
     sw   $t6, 0($sp)                 # Adiciona a cor de t8 na pilha
     
     jal Barra                        # Move pra funcao de pintar a barra de novo na tela
-    jr $ra
+    jr $a1
         
     
 #############Move a barra Para a Direita#######
 MoverDireita:
     lw   $t5, 8($sp)                 # Pega o valor de y da barra
-    bgt  $t5, 386, loop9             # Se chegou no limite da tela pela direita nao mova
+    bgt  $t5, 386, AlcancouLimite    # Se chegou no limite da tela pela direita nao mova
     
     li $t6, 0x00000000               # Adiciona a cor preta em t8
     sw $t6, 0($sp)                   # Adiciona t8 para a pilha
@@ -432,37 +457,26 @@ MoverDireita:
     sw   $t6, 0($sp)                 # Adiciona a cor de t8 na pilha
     
     jal Barra                        # Move pra funcao de pintar a barra de novo na tela
-    jr $ra
+    jr $a1
 
-
-#############Verifica se o jogo ja comecou##########
-DetectaInicio:
-    beq $v1, 0, SetaInicio          # Se o jogo ainda nao começou entao va setar $v1 para 1 e iniciar o jogo
-    j loop9
-    
-SetaInicio:
-    li $v1, 1                       # Seta a variavel de controle para joga iniciado
-    j MoverBola                     # Va mover a bolinha
-
-#############Loop do jogo##########
-loop9:
+#############Detecta Entrada##########
+VerificaEntrada:
 
     ######Le da entrada padrao um caracter######
-    lw $t1, 4($t0)
+    li $t0, 0xffff0000
+    lw $t1, ($t0)
     andi $t1, $t1, 0x0001
-    bne $t1, $zero, DetectaEntrada   # Va tratar a entrada
-    
-    jr $ra                          
-    
+    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
+    jr $ra                           # Volta pra quem chamou
     
     
+#############Loop do Inicio do jogo#############  
 loop10:
     li $v0, 12
     syscall
      
-    beq $v0, ' ', DetectaInicio      # Enquanto $a3 for igual a 'espaço' mova a bolinha
+    beq $v0, ' ', MoverBola          # Se $a3 for igual a 'espaço' mova a bolinha
     j loop10
-    
     
 LimpaTela:  
     li $t8, 0x00000000               # Adiciona a cor preta em t8
