@@ -11,7 +11,7 @@ Inicializa:
     sw $t8, 0($sp)                  # Adiciona a cor de t8 para a pilha
     li $t8, 280                     # Adiciona a posicao inicial da barra em y
     sw $t8, 4($sp)                  # Adiciona a cor de t8 para a pilha
-    li $t8, 95                      # Adiciona a posicao inicial da barra em x
+    li $t8, 0                      # Adiciona a posicao inicial da barra em x
     sw $t8, 8($sp)                  # Adiciona a cor de t8 para a pilha
 
     jal Barra                       # Desenha a bola
@@ -21,7 +21,7 @@ Inicializa:
     sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
     li $t8, 265                     # Adiciona a posicao inicial da bolinha em y
     sw $t8, 16($sp)                 # Adiciona a cor de t8 para a pilha
-    li $t8, 95                      # Adiciona a posicao inicial da bolinha em x
+    li $t8, 0                      # Adiciona a posicao inicial da bolinha em x
     sw $t8, 20($sp)                 # Adiciona a cor de t8 para a pilha
     
     jal Bola                        # Desenha a barra
@@ -39,7 +39,7 @@ InicializaRetangulos:
 
     lw   $a2, 24($sp)                # Carregando a cor que esta pilha para os retangulos
     li   $s2, 50                     # y0 = y posicao inicial de y
-    li   $s3, -95                    # x0 = x posicao inicial de x
+    li   $s3, 0                    # x0 = x posicao inicial de x
     move $s4, $s3                    # posicao inicial do x que sera deslocado
 
     addi $t8, $s3, 545               # posicao final do retangulo em x
@@ -135,12 +135,12 @@ DrawPixel:
 Barra:
 
     lw $a2, 0($sp)                    # Carregando a cor branca para o registrador a2
-    lw $s1, 4($sp)                    # y1 = y posicao final da barra
+    lw $s1, 4($sp)                    # y1 = y posicao inicial da barra
     lw $s0, 8($sp)                    # x1 = x posicao inicial da barra
     
     move $t8, $s0
  
-    addi $t2, $s0, 250               # Limite de x para pintar a barra
+    addi $t2, $s0, 150               # Limite de x para pintar a barra
     addi $t1, $s1, 5                 # limite de y para pintar a barra
     
     j  loop5                         # Comece a desenhar
@@ -309,12 +309,12 @@ MoverBolaDown:
     
     lw   $t8, 16($sp)                # Pega o valor de y da bolinha
     lw   $t7, 20($sp)                # Pega o valor de x da bolinha
-    lw   $a3, 4($sp)		     #Carregando o valor inicial da barra	
+    #lw   $a3, 4($sp)		     #Carregando o valor inicial da barra	
     
     addi $t8,$t8,5		     # add em y	
     addi $t7,$t7,5		     # add em x	
    
-    bgt $t8,265,verifica	     # Verifica lim do teto
+    bge  $t8,265,verifica	     # Verifica lim do teto
     bgt $t7,429,MoverDown2 	     # Verifica se a bolinha atingiu o limite da tela a direita	
 	         
          
@@ -346,7 +346,7 @@ MoverDown2:
     
     addi $t8,$t8,5		     # add em y	
     addi $t7,$t7,-5		     # add em x	
-    bgt $t8,265,verifica2	     # para
+    bge  $t8,265,verifica2	     # para
     blt $t7,-70,MoverBolaDown
      
               
@@ -404,16 +404,22 @@ stope:
     
 verifica:
 	lw $t2, 8($sp)
+	bgt $t7, $t2,MoverBolaUp
+	addi $t2,$t2,150
 	blt $t7, $t2,MoverBolaUp
-	addi $t2,$t2,250
-	blt $t7, $t2,MoverBolaUp
+	
+	li $t8, 265
+	sw  $t8, 16($sp)
 	j stope
 
  verifica2:
 	lw $t2, 8($sp)
+	bgt $t7, $t2,MoverUp2
+	addi $t2,$t2,150
 	blt $t7, $t2,MoverUp2
-	addi $t2,$t2,250
-	blt $t7, $t2,MoverUp2
+	
+	li $t8, 265
+	sw  $t8, 16($sp)
 	j stope 
     
 
@@ -432,7 +438,7 @@ MoverEsquerda:
     
     jal Barra                        # Pinta a Barra de preto
     
-    subi $t5, $t5, 7                 # Adiciona 1 na posicao em y da barra
+    subi $t5, $t5, 11                # Adiciona 1 na posicao em y da barra
     sw   $t5, 8($sp)                 # Adiciona a nova posicao em y da barra na pilha
     li   $t6, 0x00FFFFFF             # Adiciona a cor branca para t8
     sw   $t6, 0($sp)                 # Adiciona a cor de t8 na pilha
@@ -444,14 +450,14 @@ MoverEsquerda:
 #############Move a barra Para a Direita#######
 MoverDireita:
     lw   $t5, 8($sp)                 # Pega o valor de y da barra
-    bgt  $t5, 386, AlcancouLimite    # Se chegou no limite da tela pela direita nao mova
+    bgt  $t5, 282, AlcancouLimite    # Se chegou no limite da tela pela direita nao mova
     
     li $t6, 0x00000000               # Adiciona a cor preta em t8
     sw $t6, 0($sp)                   # Adiciona t8 para a pilha
     
     jal Barra                        # Pinta a Barra de preto
     
-    addi $t5, $t5, 7                 # Adiciona 1 na posicao em y da barra
+    addi $t5, $t5, 11                 # Adiciona 1 na posicao em y da barra
     sw   $t5, 8($sp)                 # Adiciona a nova posicao em y da barra na pilha
     li   $t6, 0x00FFFFFF             # Adiciona a cor branca para t8
     sw   $t6, 0($sp)                 # Adiciona a cor de t8 na pilha
@@ -469,14 +475,19 @@ VerificaEntrada:
     bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
     jr $ra                           # Volta pra quem chamou
     
+DetectaInicio:
+    lw $a3, 4($t0)                   # Guarda o valor digitado
+    beq $a3, ' ', MoverBola
+    j loop10
+    
     
 #############Loop do Inicio do jogo#############  
 loop10:
-    li $v0, 12
-    syscall
-     
-    beq $v0, ' ', MoverBola          # Se $a3 for igual a 'espaço' mova a bolinha
-    j loop10
+    li $t0, 0xffff0000
+    lw $t1, ($t0)
+    andi $t1, $t1, 0x0001
+    bnez $t1, DetectaInicio
+    j loop10 
     
 LimpaTela:  
     li $t8, 0x00000000               # Adiciona a cor preta em t8
