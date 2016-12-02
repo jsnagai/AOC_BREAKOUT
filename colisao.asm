@@ -239,13 +239,16 @@ DrawPixel4:
 
     j loop7                          # Volta para o loop de desenho
     
+    
+############Conta o numero de vidas###############    
 contaVidas:
     li, $t2, 4                       #inicializa com 4 vidas
          
-loop10:  #loop que verifica cada itera��o quando a bola bate na barra
+         
+loop10:  #loop que verifica cada iteracao quando a bola bate na barra
    bgt $t2, 0, MoverBola              #enquanto houver vida, movo a bola
-   jal verificaPos                   # pego uma posicao para ver se h� retangulos
-   beq $t2, 0 LimpaTela		     
+   jal verificaPos                    # pego uma posicao para ver se h� retangulos
+   beq $t2, 0 LimpaTela		      # Se nao tiver mais vidas reinicia o jogo  
 #############Detecta a entrada###########
 DetectaEntrada:
     
@@ -460,7 +463,9 @@ MoverUp2:
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
     
     j MoverUp2 
-                                                                                    
+
+
+#######################Para de mover a bolinha########################################                                                                                  
 stope:
     li $t8, 0x00FFFFFF               # Adiciona a cor branca em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha  
@@ -470,7 +475,9 @@ stope:
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
     j end
+  
     
+###############Verifica se vai bater na barra################  
 verifica:
 	lw $t2, 8($sp)
 	blt $t7, $t2,MoverBolaUp
@@ -478,6 +485,8 @@ verifica:
 	blt $t7, $t2,MoverBolaUp
 	j stope
 
+
+###############Verifica se vai bater na barra###############
  verifica2:
 	lw $t2, 8($sp)
 	blt $t7, $t2,MoverUp2
@@ -542,7 +551,8 @@ loop9:
     
     j DetectaEntrada                 # Va tratar a entrada
     
-    
+
+#######################Reinicia o jogo#############################
 LimpaTela:  
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 0($sp)                   # Adiciona t8 para a pilha
@@ -559,7 +569,9 @@ LimpaTela:
     addi $sp, $sp, 28                # Desaloca espa�o na pilha
     
     j Inicializa                     # Restarta o jogo
+
     
+########################Termina o programa######################    
 end:
 
     ####Sai do programa########
