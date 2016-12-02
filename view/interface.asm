@@ -10,7 +10,7 @@ Inicializa:
     
     li $v1, 0                       # Detecta se o jogo já começou
     
-    addi $sp, $sp, -36              # Adiciona espaco na pilha para os parametros a serem passados para as funcoes de desenho (economizando registradores)
+    addi $sp, $sp, -40              # Adiciona espaco na pilha para os parametros a serem passados para as funcoes de desenho (economizando registradores)
     
     ###########Parte da barra##############
     li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
@@ -27,7 +27,7 @@ Inicializa:
     sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
     li $t8, 265                     # Adiciona a posicao inicial da bolinha em y
     sw $t8, 16($sp)                 # Adiciona a cor de t8 para a pilha
-    li $t8, 0                      # Adiciona a posicao inicial da bolinha em x
+    li $t8, 0                       # Adiciona a posicao inicial da bolinha em x
     sw $t8, 20($sp)                 # Adiciona a cor de t8 para a pilha
     
     jal Bola                        # Desenha a barra
@@ -39,7 +39,10 @@ Inicializa:
     sw $zero, 32($sp)               # Adiciona a posicao em x de um retangulo na pilha (mais facil para deletar depois)
     jal InicializaRetangulos        # Desenha os Retangulos
     
-    j loop9                        # Inicia o jogo
+    li $t8, 4                       # Comeca com 4 vidas
+    sw $t8, 36($sp)                 # Guarda a quantidade de vidas
+    
+    j loop9                         # Inicia o jogo
     
     
 ################Funcoes de acessar os vetores###################
@@ -249,10 +252,10 @@ contaVidas:
     li, $t2, 4                       #inicializa com 4 vidas
          
          
-loop10:  #loop que verifica cada iteracao quando a bola bate na barra
-   bgt $t2, 0, MoverBola              #enquanto houver vida, movo a bola
-   jal verificaPos                    # pego uma posicao para ver se h� retangulos
-   beq $t2, 0 LimpaTela		      # Se nao tiver mais vidas reinicia o jogo  
+#loop10:  #loop que verifica cada iteracao quando a bola bate na barra
+   #bgt $t2, 0, MoverBola              #enquanto houver vida, movo a bola
+   #jal verificaPos                    # pego uma posicao para ver se h� retangulos
+   #beq $t2, 0 LimpaTela		      # Se nao tiver mais vidas reinicia o jogo  
    
            
 #############Detecta a entrada###########
@@ -333,7 +336,7 @@ DrawPixel5:
 ############Move a bolinha#####################
 MoverBola:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 30                       # Define o tempo para o programa "dormir"
+    li $a0, 20                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
@@ -364,7 +367,7 @@ MoverBola:
 ############Move a bolinha Up #####################
 MoverBolaUp:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 30                       # Define o tempo para o programa "dormir"
+    li $a0, 20                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
@@ -398,7 +401,7 @@ MoverBolaUp:
 ########Movimento de Descida###########
 MoverBolaDown:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 30                       # Define o tempo para o programa "dormir"
+    li $a0, 20                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
@@ -431,7 +434,7 @@ MoverBolaDown:
 
 MoverDown2:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 30                       # Define o tempo para o programa "dormir"
+    li $a0, 20                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
@@ -464,7 +467,7 @@ MoverDown2:
 
 MoverUp2:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 30                       # Define o tempo para o programa "dormir"
+    li $a0, 20                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
@@ -495,15 +498,15 @@ MoverUp2:
                   
            
 #######################Para de mover a bolinha########################################                                                                                        
-stope:
-    li $t8, 0x00FFFFFF               # Adiciona a cor branca em t8
-    sw $t8, 12($sp)                  # Adiciona t8 para a pilha  
+stope:    
+    lw $t2, 36($sp)                 # Pega aquantidade de vidas
+    subi $t2, $t2, 1                # Subtrai em 1 a quantidade de vidas
+    sw $t2, 36($sp)                 # Coloca a nova quantidade de vidas
+    bnez $t2, Redesenha             # Se ainda nao acabaram as vidas continua o jogo
+    li $t2, 0x00FFFFFF               # Adiciona a cor branca em t8
+    sw $t2, 12($sp)                  # Adiciona t8 para a pilha  
     jal Bola
-    
-    li $v0,32                        # Chama a funcao sleep
-    li $a0, 30                       # Define o tempo para o programa "dormir"
-    syscall                          # Manda o programa "dormir"
-    j end
+    j end                           # Se ja acabou temrina o programa                   
 
 ####################VErifica se a bolinha esta dentro do range em x da barra########
 VerificaRange:
@@ -595,8 +598,9 @@ VerificaEntrada:
     
 DetectaInicio:
     lw $a3, 4($t0)                   # Guarda o valor digitado
-    beq $a3, ' ', MoverBola
-    j loop10
+    beq $a3, ' ', MoverBola          # Se o valor digitado for " " então comeca o jogo
+    sw $zero, 4($t0)
+    j loop9
     
     
 #############Loop do Inicio do jogo#############  
@@ -604,8 +608,41 @@ loop9:
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
-    bnez $t1, DetectaInicio
-    j loop9 
+    beqz $t1, loop9
+    j DetectaInicio
+    
+
+Redesenha:
+    li $t8, 0x00000000               # Adiciona a cor preta em t8
+    sw $t8, 0($sp)                   # Adiciona t8 para a pilha
+    jal Barra                        # Pinta a Barra de preto
+    
+    li $t8, 0x00000000               # Adiciona a cor preta em t8
+    sw $t8, 12($sp)                  # Adiciona t8 para a pilha
+    jal Bola                         # Pinta a Bolinha de preto
+    
+    ###########Parte da barra##############
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 0($sp)                  # Adiciona a cor de t8 para a pilha
+    li $t8, 280                     # Adiciona a posicao inicial da barra em y
+    sw $t8, 4($sp)                  # Adiciona a cor de t8 para a pilha
+    li $t8, 0                       # Adiciona a posicao inicial da barra em x
+    sw $t8, 8($sp)                  # Adiciona a cor de t8 para a pilha
+
+    jal Barra                       # Desenha a bola
+    
+    ###############Parte da bolinha#######
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    li $t8, 265                     # Adiciona a posicao inicial da bolinha em y
+    sw $t8, 16($sp)                 # Adiciona a cor de t8 para a pilha
+    li $t8, 0                       # Adiciona a posicao inicial da bolinha em x
+    sw $t8, 20($sp)                 # Adiciona a cor de t8 para a pilha
+    
+    jal Bola                        # Desenha a barra
+    
+    j loop9                         # Comeca o joog
+
     
 LimpaTela:  
     li $t8, 0x00000000               # Adiciona a cor preta em t8
@@ -616,9 +653,9 @@ LimpaTela:
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     jal Bola                         # Pinta a Bolinha de preto
     
-    li $t8, 0x00000000               # Adiciona a cor dos retangulos para t8
-    sw $t8, 24($sp)                  # Adiciona a cor t8 para a pilha
-    jal InicializaRetangulos         # Desenha os Retangulos
+    #li $t8, 0x00000000               # Adiciona a cor dos retangulos para t8
+    #sw $t8, 24($sp)                  # Adiciona a cor t8 para a pilha
+    #jal InicializaRetangulos         # Desenha os Retangulos
     
     addi $sp, $sp, 32                # Desaloca espaço na pilha
     
