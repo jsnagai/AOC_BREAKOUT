@@ -11,7 +11,7 @@ Inicializa:
     sw $t8, 0($sp)                  # Adiciona a cor de t8 para a pilha
     li $t8, 280                     # Adiciona a posicao inicial da barra em y
     sw $t8, 4($sp)                  # Adiciona a cor de t8 para a pilha
-    li $t8, 0                      # Adiciona a posicao inicial da barra em x
+    li $t8, 0                       # Adiciona a posicao inicial da barra em x
     sw $t8, 8($sp)                  # Adiciona a cor de t8 para a pilha
 
     jal Barra                       # Desenha a bola
@@ -401,22 +401,37 @@ stope:
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
     j end
+
+
+VerificaRange:
+    addi $t2,$t2,150
+    blt $t7, $t2,MoverBolaUp
     
+    li $t8, 265
+    sw  $t8, 16($sp)
+    j stope
+    
+
 verifica:
 	lw $t2, 8($sp)
-	bgt $t7, $t2,MoverBolaUp
-	addi $t2,$t2,150
-	blt $t7, $t2,MoverBolaUp
+	bgt $t7, $t2,VerificaRange
 	
 	li $t8, 265
 	sw  $t8, 16($sp)
 	j stope
 
+
+VerificaRange2:
+    addi $t2,$t2,150
+    blt $t7, $t2,MoverUp2
+    
+    li $t8, 265
+    sw  $t8, 16($sp)
+    j stope 
+
  verifica2:
 	lw $t2, 8($sp)
 	bgt $t7, $t2,MoverUp2
-	addi $t2,$t2,150
-	blt $t7, $t2,MoverUp2
 	
 	li $t8, 265
 	sw  $t8, 16($sp)
