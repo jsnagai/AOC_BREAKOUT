@@ -10,7 +10,7 @@ Inicializa:
     
     li $v1, 0                       # Detecta se o jogo jï¿½ comeï¿½ou
     
-    addi $sp, $sp, -28              # Adiciona espaco na pilha para os parametros a serem passados para as funcoes de desenho (economizando registradores)
+    addi $sp, $sp, -36              # Adiciona espaco na pilha para os parametros a serem passados para as funcoes de desenho (economizando registradores)
     
     ###########Parte da barra##############
     li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
@@ -35,9 +35,11 @@ Inicializa:
     ##############Parte dos Retangulos######
     li $t8, 0x00FF0000              # Adiciona a cor dos retangulos para t8
     sw $t8, 24($sp)                 # Adiciona a cor t8 para a pilha
+    sw $zero, 28($sp)               # Adiciona a posicao em y de um retangulo na pilha (mais facil para deletar depois)
+    sw $zero, 32($sp)               # Adiciona a posicao em x de um retangulo na pilha (mais facil para deletar depois)
     jal InicializaRetangulos        # Desenha os Retangulos
     
-    j end                         # Inicia o jogo
+    j loop9                         # Inicia o jogo
 
     
 AcessaLX:
@@ -48,7 +50,6 @@ AcessaLX:
     add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
     add $t1, $t2, $t1    # Combina os 2 componentes do endereï¿½o
     lw $t4, 0($t1)       # pega o valor na celula de listX
-    move $s4, $t4	 # passa t4 (valor no indice do vetor) para RA
     jr $ra		 #retorna RA
 
 AcessaLY:
@@ -59,7 +60,6 @@ AcessaLY:
     add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
     add $t1, $t2, $t1    # Combina os 2 componentes do endereï¿½o
     lw $t4, 0($t1)       # pega o valor na celula de listY
-    move $s2, $t4	 # passa t4 (valor no indice do vetor) para RA
     jr $ra		 #retorna RA
     
 AcessaLB:
@@ -70,7 +70,6 @@ AcessaLB:
     add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
     add $t1, $t2, $t1    # Combina os 2 componentes do endereï¿½o
     lw $t4, 0($t1)       # pega o valor na celula de listB
-    move $ra, $t4	 # passa t4 (valor no indice do vetor) para RA
     jr $ra		 #retorna RA
     
     
@@ -80,52 +79,30 @@ AcessaLB:
 
 InicializaRetangulos:
 
-    lw   $a2, 24($sp)                # Carregando a cor que esta pilha para os retangulos
+    lw $a2, 24($sp)                # Carregando a cor que esta pilha para os retangulos
     li $k0, 0
-    li $k1, 0   
-    #la   $t3, listX		     # carrega lista listX em t3
-    #li   $t2, 0			     # coloca posicao 0 em t2
-    #add  $t1, $t2, $t3		     # combina os dois elementos para acesso
-    #move $s2, $t1	             # y0 = y posicao inicial de y
-    #li $k0, 0
-    jal AcessaLY
-    #move $s2, $ra
-    
-    
-    #la   $t3, listY		     # carrega a lista listY em t3
-    #li   $t2, 0			     # coloca a posicao 0 em t2
-    #add  $t1, $t2, $t3    	     # combina os dois elementos para acesso
-    #move $s3, $t1 	             # x0 = x posicao inicial de x
-    jal AcessaLX
-    #move $s4, $ra
-
-    #move $s3, $s4                    # posicao inicial do x que sera deslocado
-
-    li $t8, 450               # posicao final do retangulo em x
-    li $t9, 134                # posicao final do retangulo em y
-
-    addi $t4, $s2, 96                # define a fileira que irei mudar para a cor verde
-    addi $t5, $s2, 132               # define a fileira que irei mudar para a cor azul
+    li $k1, 0
+    move $s3, $ra
 
 loop3:
     jal  AcessaLX
-    jal AcessaLY
+    move $s4, $t4
+    jal  AcessaLY
+    move $s2, $t4
     addi $k0, $k0, 1
     addi $k1, $k1, 1
     bge  $s2, 78, MudaCorVerde  
-    ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
-    j loop9                         # Inicia o programa
+    ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos            
+    jr $s3
 
     
-MudaCorVerde:
-    #beq $a2, 0x00000000, NaoMudaCor  # Caso seja final de jogo o valor de a2 sera preto
-    
+MudaCorVerde:    
     li  $a2, 0x0000FF00              # Muda $a2 para verde
     
     bge $s2, 106, MudaCorAzul        # Muda a cor dos retangulos para azul
     
     ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
-    j loop9                         # Inicia o programa
+    jr $s3                           # Inicia o programa
     
     
 MudaCorAzul:
@@ -133,22 +110,18 @@ MudaCorAzul:
     li  $a2, 0x000000FF              # Muda $a2 para azul
     
     ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
-    j loop9                        # Inicia o programa
-    
-NaoMudaCor:
-   blt $k1, 7, DesenhaRetangulo    # Enquanto nao chegar no final das fileiras continue desenhando retangulos
-   jr  $ra                           # Se chegou va desenhar a barra
+    jr $s3                           # Inicia o programa
     
 
 ######Desenhando um retangulo#####
-
 DesenhaRetangulo:
-    
     move $s1, $s2                    # y1 = y posicao inicial de y para desenhar o retangulo
     move $s0, $s4                    # x1 = x posicao inicial de x para desenhar o retangulo
  
     addi $t2, $s0, 28                # Posicao final de x
     addi $t1, $s1, 10                # Posicao final de y
+    
+    j loop
     
 
 loop:
@@ -162,7 +135,7 @@ loop2:
    move $s0, $s4                     # Reseta x1 para o inicio
  
    blt  $s1, $t1, DrawPixel          # Enquanto y1 nao atingiu o limite (t1) pinte o pixel (s0, s1)
-   j    loop3                        # Quando terminar o retangulo va desenhar o proxima retangulo
+   j loop3                           # Quando terminar o retangulo va desenhar o proxima retangulo
 
  
 DrawPixel:
@@ -266,12 +239,12 @@ DrawPixel4:
 
     j loop7                          # Volta para o loop de desenho
     
- contaVidas:
+contaVidas:
     li, $t2, 4                       #inicializa com 4 vidas
          
- loop10:  #loop que verifica cada iteração quando a bola bate na barra
+loop10:  #loop que verifica cada iteraï¿½ï¿½o quando a bola bate na barra
    bgt $t2, 0, MoverBola              #enquanto houver vida, movo a bola
-   jal verificaPos                   # pego uma posicao para ver se há retangulos
+   jal verificaPos                   # pego uma posicao para ver se hï¿½ retangulos
    beq $t2, 0 LimpaTela		     
 #############Detecta a entrada###########
 DetectaEntrada:
@@ -286,15 +259,54 @@ DetectaEntrada:
 excluiRet:
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 0($sp)                   # Adiciona t8 para a pilha
+    ################Deve-se adcionar na pilha a posicao a ser excluida############
+    #lw XXX, 32($sp), onde XXX = posicao em x do retangulo a ser excluido
+    #lw YYY, 28($sp), onde YYY = posicao em y do retangulo a ser excluido
     jal pintaPreto		     #pinta o retangulo de preto
     
+#################Pinta o retangulo de preto######################
 pintaPreto:
-   j DesenhaRetangulo		      #desenha um retangulo preto no lugar
+    lw $s1, 28($sp)                  # y1 = y posicao inicial de y para desenhar o retangulo
+    lw $s0, 32($sp)                  # x1 = x posicao inicial de x para desenhar o retangulo
+ 
+    addi $t2, $s0, 28                # Posicao final de x
+    addi $t1, $s1, 10                # Posicao final de y
+    
+    j loop11
+    
+
+loop11:
+
+   blt  $s0, $t2, DrawPixel5          # Enquanto x1 ainda nao atingiu o limite (t0) pinte o pixel (s0,s1)
+   addi $s1, $s1, 1                  # Quando x1 chegar no limite (t0) adiciona 1 em y1 (pula linha)
    
+ 
+loop12:
+
+   move $s0, $s4                     # Reseta x1 para o inicio
+ 
+   blt  $s1, $t1, DrawPixel5          # Enquanto y1 nao atingiu o limite (t1) pinte o pixel (s0, s1)
+   jr $ra                            # Quando terminar o retangulo volta pra quem chamou
+
+ 
+DrawPixel5:
+ 
+    addi  $s0, $s0, 1                # Adiciona 1 em x inicial
+    li    $t3, 0x10000100            # t3 = primeiro pixel da tela
+ 
+    sll   $t0, $s1, 9                # y = y * 512
+    addu  $t0, $t0, $s0              # (xy) t0 = x + y
+    sll   $t0, $t0, 2                # (xy) t0 = xy * 4
+    addu  $t0, $t3, $t0              # Adiciona xy ao primeiro pixel ( t3 )
+    sw    $a2, ($t0)                 # Coloca a cor de (a2) em t0
+
+    j     loop11                     # Volta para o loop de desenho
+
    
+#######################Verifica a pos do retangulo###################   
  verificaPos:
     addi $a0, $t4, 0                 #salva o valor armazenado em uma pos do vetor em $a0
-    beq $a0, 1, excluiRet	     #se a posição tiver um retangulo flag =1, então deleta o retangulo
+    beq $a0, 1, excluiRet	     #se a posiï¿½ï¿½o tiver um retangulo flag =1, entï¿½o deleta o retangulo
     jal MoverBola
     
 #coordenadas x e y de cada linha de blocos:
