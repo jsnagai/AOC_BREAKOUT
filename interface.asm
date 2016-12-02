@@ -1,8 +1,14 @@
+.data
+
+    listX: .word -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449, -63, -31, 1, 33, 65, 97, 129, 161, 193, 225, 257, 289, 321, 353, 385, 417, 449
+    listY: .word 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 50, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 64, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 78, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 92, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 106, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 120, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134, 134
+    listB: .word 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+    
 .text
 
 Inicializa:
     
-    li $v1, 0                       # Detecta se o jogo já começou
+    li $v1, 0                       # Detecta se o jogo j� come�ou
     
     addi $sp, $sp, -28              # Adiciona espaco na pilha para os parametros a serem passados para as funcoes de desenho (economizando registradores)
     
@@ -31,82 +37,124 @@ Inicializa:
     sw $t8, 24($sp)                 # Adiciona a cor t8 para a pilha
     jal InicializaRetangulos        # Desenha os Retangulos
     
-    j loop10                        # Inicia o jogo
+    j end                         # Inicia o jogo
 
+    
+AcessaLX:
+
+    la $t1, listX        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    lw $t4, 0($t1)       # pega o valor na celula de listX
+    move $s4, $t4	 # passa t4 (valor no indice do vetor) para RA
+    jr $ra		 #retorna RA
+
+AcessaLY:
+
+    la $t1, listY        # coloca o entere�o em $t3			
+    move $t2, $k1	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    lw $t4, 0($t1)       # pega o valor na celula de listY
+    move $s2, $t4	 # passa t4 (valor no indice do vetor) para RA
+    jr $ra		 #retorna RA
+    
+AcessaLB:
+
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    lw $t4, 0($t1)       # pega o valor na celula de listB
+    move $ra, $t4	 # passa t4 (valor no indice do vetor) para RA
+    jr $ra		 #retorna RA
+    
+    
 
 ######Desenhando varios retangulos#####
+
+
 InicializaRetangulos:
 
     lw   $a2, 24($sp)                # Carregando a cor que esta pilha para os retangulos
-    li   $s2, 50                     # y0 = y posicao inicial de y
-    li   $s3, -95                    # x0 = x posicao inicial de x
-    move $s4, $s3                    # posicao inicial do x que sera deslocado
+    li $k0, 0
+    li $k1, 0   
+    #la   $t3, listX		     # carrega lista listX em t3
+    #li   $t2, 0			     # coloca posicao 0 em t2
+    #add  $t1, $t2, $t3		     # combina os dois elementos para acesso
+    #move $s2, $t1	             # y0 = y posicao inicial de y
+    #li $k0, 0
+    jal AcessaLY
+    #move $s2, $ra
+    
+    
+    #la   $t3, listY		     # carrega a lista listY em t3
+    #li   $t2, 0			     # coloca a posicao 0 em t2
+    #add  $t1, $t2, $t3    	     # combina os dois elementos para acesso
+    #move $s3, $t1 	             # x0 = x posicao inicial de x
+    jal AcessaLX
+    #move $s4, $ra
 
-    addi $t8, $s3, 545               # posicao final do retangulo em x
-    addi $t9, $s2, 90                # posicao final do retangulo em y
+    #move $s3, $s4                    # posicao inicial do x que sera deslocado
 
-    addi $t4, $s2, 30                # define a fileira que irei mudar para a cor verde
-    addi $t5, $s2, 60                # define a fileira que irei mudar para a cor azul
+    li $t8, 450               # posicao final do retangulo em x
+    li $t9, 134                # posicao final do retangulo em y
+
+    addi $t4, $s2, 96                # define a fileira que irei mudar para a cor verde
+    addi $t5, $s2, 132               # define a fileira que irei mudar para a cor azul
 
 loop3:
+    jal  AcessaLX
+    jal AcessaLY
+    addi $k0, $k0, 1
+    addi $k1, $k1, 1
+    bge  $s2, 78, MudaCorVerde  
+    ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
+    j loop9                         # Inicia o programa
 
-    addi $s4, $s4, 32                # Adiciona no inicio do proximo retangulo (em x)
-    
-    blt  $s4, $t8, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
-    j    loop4                       # Se chegou no final va para a proxima fileira
-    
-    
-loop4:
-
-    addi $s2, $s2, 14                # Adiciona no inicio do proximo retangulo (em y)
-    move $s4, $s3                    # Reseta o x inicial do retangulo para o x0
-    
-    bge  $s2, $t4, MudaCorVerde      # Muda a cor dos retangulos para ou verde ou azul
-    
-    blt  $s2, $t9, DesenhaRetangulo  # Enquanto nao chegar no final das fileiras continue desenhando retangulos
-    jr   $ra                         # Se chegou retorna pra quem chamou
     
 MudaCorVerde:
-    beq $a2, 0x00000000, NaoMudaCor  # Caso seja final de jogo o valor de a2 sera preto
+    #beq $a2, 0x00000000, NaoMudaCor  # Caso seja final de jogo o valor de a2 sera preto
     
     li  $a2, 0x0000FF00              # Muda $a2 para verde
     
-    bge $s2, $t5, MudaCorAzul        # Muda a cor dos retangulos para azul
+    bge $s2, 106, MudaCorAzul        # Muda a cor dos retangulos para azul
     
-    blt $s2, $t9, DesenhaRetangulo   # Enquanto nao chegar no final das fileiras continue desenhando retangulos
-    jr  $ra                          # Se chegou va desenhar a barra
+    ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
+    j loop9                         # Inicia o programa
     
     
 MudaCorAzul:
 
     li  $a2, 0x000000FF              # Muda $a2 para azul
     
-    blt $s2, $t9, DesenhaRetangulo   # Enquanto nao chegar no final das fileiras continue desenhando retangulos
-    jr  $ra                          # Se chegou va desenhar a barra
+    ble  $k1, 118, DesenhaRetangulo  # Enquanto nao chegar no final da tela continue desenhando retangulos
+    j loop9                        # Inicia o programa
     
 NaoMudaCor:
-   blt $s2, $t9, DesenhaRetangulo    # Enquanto nao chegar no final das fileiras continue desenhando retangulos
+   blt $k1, 7, DesenhaRetangulo    # Enquanto nao chegar no final das fileiras continue desenhando retangulos
    jr  $ra                           # Se chegou va desenhar a barra
     
 
 ######Desenhando um retangulo#####
 
 DesenhaRetangulo:
-
+    
     move $s1, $s2                    # y1 = y posicao inicial de y para desenhar o retangulo
     move $s0, $s4                    # x1 = x posicao inicial de x para desenhar o retangulo
  
     addi $t2, $s0, 28                # Posicao final de x
     addi $t1, $s1, 10                # Posicao final de y
-
-    j    loop
     
 
 loop:
 
    blt  $s0, $t2, DrawPixel          # Enquanto x1 ainda nao atingiu o limite (t0) pinte o pixel (s0,s1)
    addi $s1, $s1, 1                  # Quando x1 chegar no limite (t0) adiciona 1 em y1 (pula linha)
-   j loop2
    
  
 loop2:
@@ -140,7 +188,7 @@ Barra:
     
     move $t8, $s0
  
-    addi $t2, $s0, 250               # Limite de x para pintar a barra
+    addi $t2, $s0, 150                # Limite de x para pintar a barra
     addi $t1, $s1, 5                 # limite de y para pintar a barra
     
     j  loop5                         # Comece a desenhar
@@ -220,23 +268,18 @@ DrawPixel4:
     
 #############Detecta a entrada###########
 DetectaEntrada:
-    lw $a3, 4($t0)                   # Guarda o valor digitado
-    move $a1, $ra                    # Guarda o endereço de quem chamou
-    beq $a3, 'a', MoverEsquerda      # Se for 'a' eh para mover a barra para a esquerda
-    beq $a3, 'd', MoverDireita       # Se for 'd' tambem move a barra para a direita
-    beq $a3, 'e', LimpaTela          # Teste para ver se o jogo eh restartado direitinho
-    jr $a1                           # Se nao for nem 'a', 'd' ou 'e' volta pra quem chamou
+    
+    beq $v0, ' ', DetectaInicio      # Enquanto $a3 for igual a 'espa�o' mova a bolinha
+    beq $v0, 'a', MoverEsquerda      # Se for 'a' eh para mover a barra para a esquerda
+    beq $v0, 'd', MoverDireita       # Se for 'd' tambem move a barra para a direita
+    beq $v0, 'e', LimpaTela          # Teste para ver se o jogo eh restartado direitinho
+    j   loop9                        # Se nao for nem 'a', 'd' ou 'espa�o' va para o loop
     
 ############Move a bolinha#####################
 MoverBola:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
-    li $t0, 0xffff0000
-    lw $t1, ($t0)
-    andi $t1, $t1, 0x0001
-    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
-    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -245,8 +288,8 @@ MoverBola:
     lw   $t8, 16($sp)                # Pega o valor de y da bolinha
     lw   $t7, 20($sp)                # Pega o valor de x da bolinha
     
-    addi $t8,$t8,-5		     # soma a posição em y	
-    addi $t7,$t7,-5		     # soma a posição em x
+    addi $t8,$t8,-5		     # soma a posi��o em y	
+    addi $t7,$t7,-5		     # soma a posi��o em x
     blt $t8,37,MoverBolaDown         # Se a bola chegar em y na posicao 37 muda o movimento
     blt $t7,-60,MoverBolaUp          # Se a bola chegar em x na posicao -60 muda o movimento
           
@@ -256,6 +299,7 @@ MoverBola:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    
     j MoverBola
 
 ############Move a bolinha Up #####################
@@ -263,11 +307,6 @@ MoverBolaUp:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
-    li $t0, 0xffff0000
-    lw $t1, ($t0)
-    andi $t1, $t1, 0x0001
-    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
-    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -276,8 +315,8 @@ MoverBolaUp:
     lw   $t8, 16($sp)                # Pega o valor de y da bolinha
     lw   $t7, 20($sp)                # Pega o valor de x da bolinha
     
-    addi $t8,$t8,-5		     # soma a posição em y	
-    addi $t7,$t7,5		     # soma a posição em x
+    addi $t8,$t8,-5		     # soma a posi��o em y	
+    addi $t7,$t7,5		     # soma a posi��o em x
     blt $t8,37,MoverBolaDown	     # Verifica se a bolinha atingiu o chao
     bgt $t7,429,MoverUp2		     # Verifica se a bolinha atingiu o limite da tela a direita
 
@@ -289,6 +328,7 @@ MoverBolaUp:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    
     j MoverBolaUp
    
             
@@ -297,11 +337,6 @@ MoverBolaDown:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
-    li $t0, 0xffff0000
-    lw $t1, ($t0)
-    andi $t1, $t1, 0x0001
-    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
-    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -324,17 +359,13 @@ MoverBolaDown:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    
     j MoverBolaDown
 
 MoverDown2:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
-    li $t0, 0xffff0000
-    lw $t1, ($t0)
-    andi $t1, $t1, 0x0001
-    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
-    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -356,6 +387,7 @@ MoverDown2:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    
     j MoverDown2    
     
 
@@ -363,11 +395,6 @@ MoverUp2:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 30                       # Define o tempo para o programa "dormir"
     syscall                          # Manda o programa "dormir"
-    li $t0, 0xffff0000
-    lw $t1, ($t0)
-    andi $t1, $t1, 0x0001
-    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
-    # Depois continua a desenhar a bolinha
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     
@@ -376,8 +403,8 @@ MoverUp2:
     lw   $t8, 16($sp)                # Pega o valor de y da bolinha
     lw   $t7, 20($sp)                # Pega o valor de x da bolinha
     
-    addi $t8,$t8,-5		     # soma a posição em y	
-    addi $t7,$t7,-5		     # soma a posição em x
+    addi $t8,$t8,-5		     # soma a posi��o em y	
+    addi $t7,$t7,-5		     # soma a posi��o em x
     blt $t8,37,MoverDown2
     bgt $t7,429,MoverUp2
     blt $t7,-70,MoverBolaUp 
@@ -388,6 +415,7 @@ MoverUp2:
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    
     j MoverUp2 
                   
            
@@ -405,78 +433,74 @@ stope:
 verifica:
 	lw $t2, 8($sp)
 	blt $t7, $t2,MoverBolaUp
-	addi $t2,$t2,250
+	addi $t2,$t2,150
 	blt $t7, $t2,MoverBolaUp
 	j stope
 
  verifica2:
 	lw $t2, 8($sp)
 	blt $t7, $t2,MoverUp2
-	addi $t2,$t2,250
+	addi $t2,$t2,150
 	blt $t7, $t2,MoverUp2
 	j stope 
     
-
-AlcancouLimite:
-    jr $a1
-
-
 #############Move a barra Para a Esquerda#######
 MoverEsquerda:
     
-    lw   $t5, 8($sp)                 # Pega o valor de y da barra
-    blt  $t5, -55, AlcancouLimite    # Se chegou no limite da tela pela esquerda nao mova
+    lw   $t7, 8($sp)                 # Pega o valor de y da barra
+    blt  $t7, -55, loop9             # Se chegou no limite da tela pela esquerda nao mova
     
-    li $t6, 0x00000000               # Adiciona a cor preta em t8
-    sw $t6, 0($sp)                   # Adiciona t8 para a pilha
+    li $t8, 0x00000000               # Adiciona a cor preta em t8
+    sw $t8, 0($sp)                   # Adiciona t8 para a pilha
     
     jal Barra                        # Pinta a Barra de preto
     
-    subi $t5, $t5, 7                 # Adiciona 1 na posicao em y da barra
-    sw   $t5, 8($sp)                 # Adiciona a nova posicao em y da barra na pilha
-    li   $t6, 0x00FFFFFF             # Adiciona a cor branca para t8
-    sw   $t6, 0($sp)                 # Adiciona a cor de t8 na pilha
+    subi $t7, $t7, 7                 # Adiciona 1 na posicao em y da barra
+    sw   $t7, 8($sp)                 # Adiciona a nova posicao em y da barra na pilha
+    li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
+    sw   $t8, 0($sp)                 # Adiciona a cor de t8 na pilha
     
     jal Barra                        # Move pra funcao de pintar a barra de novo na tela
-    jr $a1
+    j loop9
         
     
 #############Move a barra Para a Direita#######
 MoverDireita:
-    lw   $t5, 8($sp)                 # Pega o valor de y da barra
-    bgt  $t5, 386, AlcancouLimite    # Se chegou no limite da tela pela direita nao mova
+    lw   $t7, 8($sp)                 # Pega o valor de y da barra
+    bgt  $t7, 386, loop9             # Se chegou no limite da tela pela direita nao mova
     
-    li $t6, 0x00000000               # Adiciona a cor preta em t8
-    sw $t6, 0($sp)                   # Adiciona t8 para a pilha
+    li $t8, 0x00000000               # Adiciona a cor preta em t8
+    sw $t8, 0($sp)                   # Adiciona t8 para a pilha
     
     jal Barra                        # Pinta a Barra de preto
     
-    addi $t5, $t5, 7                 # Adiciona 1 na posicao em y da barra
-    sw   $t5, 8($sp)                 # Adiciona a nova posicao em y da barra na pilha
-    li   $t6, 0x00FFFFFF             # Adiciona a cor branca para t8
-    sw   $t6, 0($sp)                 # Adiciona a cor de t8 na pilha
+    addi $t7, $t7, 7                 # Adiciona 1 na posicao em y da barra
+    sw   $t7, 8($sp)                 # Adiciona a nova posicao em y da barra na pilha
+    li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
+    sw   $t8, 0($sp)                 # Adiciona a cor de t8 na pilha
     
     jal Barra                        # Move pra funcao de pintar a barra de novo na tela
-    jr $a1
+    j loop9
 
-#############Detecta Entrada##########
-VerificaEntrada:
+
+#############Verifica se o jogo ja comecou##########
+DetectaInicio:
+    beq $v1, 0, SetaInicio          # Se o jogo ainda nao come�ou entao va setar $v1 para 1 e iniciar o jogo
+    j loop9
+    
+SetaInicio:
+    li $v1, 1                       # Seta a variavel de controle para joga iniciado
+    j MoverBola                     # Va mover a bolinha
+
+#############Loop do jogo##########
+loop9:
 
     ######Le da entrada padrao um caracter######
-    li $t0, 0xffff0000
-    lw $t1, ($t0)
-    andi $t1, $t1, 0x0001
-    bnez $t1, DetectaEntrada         # Se tiver algo na entrada padrão vá verificar se deve mover a barra
-    jr $ra                           # Volta pra quem chamou
-    
-    
-#############Loop do Inicio do jogo#############  
-loop10:
-    li $v0, 12
+    li $v0, 12                       # Da load no registrador $v0 com o codigo de ler_caracter
     syscall
-     
-    beq $v0, ' ', MoverBola          # Se $a3 for igual a 'espaço' mova a bolinha
-    j loop10
+    
+    j DetectaEntrada                 # Va tratar a entrada
+    
     
 LimpaTela:  
     li $t8, 0x00000000               # Adiciona a cor preta em t8
@@ -491,7 +515,7 @@ LimpaTela:
     sw $t8, 24($sp)                  # Adiciona a cor t8 para a pilha
     jal InicializaRetangulos         # Desenha os Retangulos
     
-    addi $sp, $sp, 28                # Desaloca espaço na pilha
+    addi $sp, $sp, 28                # Desaloca espa�o na pilha
     
     j Inicializa                     # Restarta o jogo
     
