@@ -245,17 +245,6 @@ DrawPixel4:
     sw    $a2, ($t0)                 # Coloca a cor branca ($a2) em $t0
 
     j loop7                          # Volta para o loop de desenho
-
-    
-############Conta o numero de vidas###############    
-contaVidas:
-    li, $t2, 4                       #inicializa com 4 vidas
-         
-         
-#loop10:  #loop que verifica cada iteracao quando a bola bate na barra
-   #bgt $t2, 0, MoverBola              #enquanto houver vida, movo a bola
-   #jal verificaPos                    # pego uma posicao para ver se h� retangulos
-   #beq $t2, 0 LimpaTela		      # Se nao tiver mais vidas reinicia o jogo  
    
            
 #############Detecta a entrada###########
@@ -282,6 +271,9 @@ excluiRet:
 pintaPreto:
     lw $s1, 28($sp)                  # y1 = y posicao inicial de y para desenhar o retangulo
     lw $s0, 32($sp)                  # x1 = x posicao inicial de x para desenhar o retangulo
+    li $a2, 0x00000000
+    
+    move $t8, $s0
  
     addi $t2, $s0, 28                # Posicao final de x
     addi $t1, $s1, 10                # Posicao final de y
@@ -297,7 +289,7 @@ loop11:
  
 loop12:
 
-   move $s0, $s4                     # Reseta x1 para o inicio
+   move $s0, $t8                     # Reseta x1 para o inicio
  
    blt  $s1, $t1, DrawPixel5          # Enquanto y1 nao atingiu o limite (t1) pinte o pixel (s0, s1)
    jr $ra                            # Quando terminar o retangulo volta pra quem chamou
@@ -332,12 +324,130 @@ DrawPixel5:
 #6.   x = 250   y = 66
 #7.   x= 290  y= 56
 
+
+ContinuarMov:
+    sw   $s6, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
+    sw   $s7, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
+    li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
+    sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
+    
+    jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    j MoverBolaUp
+   
+
+
+Colisao:
+    move $s6, $t8
+    move $s7, $t7
+    
+    blt  $s6, 129, ContinuarMov
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beqz $t4, ContinuarMov
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    li $t8, 144
+    sw $t8, 16($sp)
+    sw $t7, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j MoverDown2
+
+    
+ContinuarMov2:
+    sw   $s6, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
+    sw   $s7, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
+    li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
+    sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
+    
+    #ble $t8, 144, Colisao            # Se chegou na primeira y dos retangulos veja se vai colidir
+    
+    jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    j MoverUp2
+         
+    
+Colisao2:
+    move $s6, $t8
+    move $s7, $t7
+    
+    blt  $s6, 128, ContinuarMov2
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beqz $t4, ContinuarMov2 
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    li $t8, 144
+    sw $t8, 16($sp)
+    sw $t7, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    j MoverBolaDown
+
+
+FindPosY:
+    move $s3, $ra                    # Guarda o endereco de quem chamou
+    li $k1, -1                       # Contador de pos do vetor em y
+    li $s0, 0                        # Posicao incial q tem $t8 em y
+    
+loop14:
+    addi $k1, $k1, 1                 # Move a posicao do vetor
+    jal AcessaLY                     # Acessa a posicao $k1 no vetor de y
+    bne $t4, 134, loop14             # Enquanto nao achou o comeco em y continua procurando   
+    move $s0, $k1                    # Se achou move o valor da posicao para $s0
+    jr $s3                           # Retorna pra quem chamou
+    
+  
+FindPosX:
+    move $s3, $ra                    # Guarda o endereco de quem chamou
+    move $k0, $s0                    # Inicia a procura no primeiro y = $t8
+    subi $k0, $k0, 1
+    
+    
+loop13:
+    addi $k0, $k0, 1
+    jal AcessaLX
+    bgt $t7, $t4, loop13             # Enquanto nao achar o x que a bola bate continua a procurar
+    subi $k0, $k0, 1
+    jal AcessaLX
+    move $s1, $k0                    # Move para s1 o valor do x igual ou maior q o da bola
+    sw $t4, 32($sp)                  # Salva na pilha o x q talvez deva ser pintado de preto
+    li $t8, 134
+    sw $t8, 28($sp)                  # Salva na pilha o y q talvez deva ser pintado de preto
+    jr $s3                           # Volta pra quem chamou
+    
           
 ############Move a bolinha#####################
 MoverBola:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 20                       # Define o tempo para o programa "dormir"
-    syscall                          # Manda o programa "dormir"
+    #syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -368,7 +478,7 @@ MoverBola:
 MoverBolaUp:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 20                       # Define o tempo para o programa "dormir"
-    syscall                          # Manda o programa "dormir"
+    #syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -385,8 +495,8 @@ MoverBolaUp:
     addi $t8,$t8,-5		     # soma a posição em y	
     addi $t7,$t7,5		     # soma a posição em x
     blt $t8,37,MoverBolaDown	     # Verifica se a bolinha atingiu o chao
-    bgt $t7,429,MoverUp2		     # Verifica se a bolinha atingiu o limite da tela a direita
-
+    bgt $t7,429,MoverUp2             # Verifica se a bolinha atingiu o limite da tela a direita
+    ble $t8, 144, Colisao            # Se chegou na primeira y dos retangulos veja se vai colidir
               
              
     sw   $t8, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
@@ -402,7 +512,7 @@ MoverBolaUp:
 MoverBolaDown:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 20                       # Define o tempo para o programa "dormir"
-    syscall                          # Manda o programa "dormir"
+    #syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -435,7 +545,7 @@ MoverBolaDown:
 MoverDown2:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 20                       # Define o tempo para o programa "dormir"
-    syscall                          # Manda o programa "dormir"
+    #syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -468,7 +578,7 @@ MoverDown2:
 MoverUp2:
     li $v0,32                        # Chama a funcao sleep
     li $a0, 20                       # Define o tempo para o programa "dormir"
-    syscall                          # Manda o programa "dormir"
+    #syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -486,7 +596,8 @@ MoverUp2:
     addi $t7,$t7,-5		     # soma a posição em x
     blt $t8,37,MoverDown2
     bgt $t7,429,MoverUp2
-    blt $t7,-70,MoverBolaUp 
+    blt $t7,-70,MoverBolaUp
+    ble $t8, 144, Colisao2           # Se chegou na primeira y dos retangulos veja se vai colidir
              
     sw   $t8, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
     sw   $t7, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
@@ -641,7 +752,7 @@ Redesenha:
     
     jal Bola                        # Desenha a barra
     
-    j loop9                         # Comeca o joog
+    j loop9                         # Comeca o jogo
 
     
 LimpaTela:  
@@ -652,10 +763,6 @@ LimpaTela:
     li $t8, 0x00000000               # Adiciona a cor preta em t8
     sw $t8, 12($sp)                  # Adiciona t8 para a pilha
     jal Bola                         # Pinta a Bolinha de preto
-    
-    #li $t8, 0x00000000               # Adiciona a cor dos retangulos para t8
-    #sw $t8, 24($sp)                  # Adiciona a cor t8 para a pilha
-    #jal InicializaRetangulos         # Desenha os Retangulos
     
     addi $sp, $sp, 32                # Desaloca espaço na pilha
     
