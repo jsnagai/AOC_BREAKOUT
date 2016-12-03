@@ -340,6 +340,8 @@ Colisao:
     move $s6, $t8
     move $s7, $t7
     
+    blt  $s6, 129, ContinuarMov
+    
     jal FindPosY
     jal FindPosX
     jal AcessaLB
@@ -372,6 +374,8 @@ ContinuarMov2:
     li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
+    #ble $t8, 144, Colisao            # Se chegou na primeira y dos retangulos veja se vai colidir
+    
     jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
     j MoverUp2
          
@@ -379,6 +383,8 @@ ContinuarMov2:
 Colisao2:
     move $s6, $t8
     move $s7, $t7
+    
+    blt  $s6, 128, ContinuarMov2
     
     jal FindPosY
     jal FindPosX
@@ -591,7 +597,7 @@ MoverUp2:
     blt $t8,37,MoverDown2
     bgt $t7,429,MoverUp2
     blt $t7,-70,MoverBolaUp
-    ble $t8, 144, Colisao2            # Se chegou na primeira y dos retangulos veja se vai colidir
+    ble $t8, 144, Colisao2           # Se chegou na primeira y dos retangulos veja se vai colidir
              
     sw   $t8, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
     sw   $t7, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
