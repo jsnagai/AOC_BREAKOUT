@@ -25,7 +25,7 @@ Inicializa:
     ###############Parte da bolinha#######
     li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
     sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
-    li $t8, 265                     # Adiciona a posicao inicial da bolinha em y
+    li $t8, 270                     # Adiciona a posicao inicial da bolinha em y
     sw $t8, 16($sp)                 # Adiciona a cor de t8 para a pilha
     li $t8, 0                       # Adiciona a posicao inicial da bolinha em x
     sw $t8, 20($sp)                 # Adiciona a cor de t8 para a pilha
@@ -212,8 +212,8 @@ Bola:
     
     move $t8, $s0
  
-    addi $t2, $s0, 14                # Posicao final de x
-    addi $t1, $s1, 12                # Posicao final de y
+    addi $t2, $s0, 12                # Posicao final de x
+    addi $t1, $s1, 8                 # Posicao final de y
     
     j    loop7                       # Comece a desenhar
     
@@ -256,17 +256,7 @@ DetectaEntrada:
     beq $a3, 'e', LimpaTela          # Teste para ver se o jogo eh restartado direitinho
     jr $a1                           # Se nao for nem 'a', 'd' ou 'e' volta pra quem chamou
  
- 
-###########Exclui o retangulo###########
-excluiRet:
-    li $t8, 0x00000000               # Adiciona a cor preta em t8
-    sw $t8, 0($sp)                   # Adiciona t8 para a pilha
-    ################Deve-se adcionar na pilha a posicao a ser excluida############
-    #lw XXX, 32($sp), onde XXX = posicao em x do retangulo a ser excluido
-    #lw YYY, 28($sp), onde YYY = posicao em y do retangulo a ser excluido
-    jal pintaPreto		     #pinta o retangulo de preto
-    
-    
+     
 #################Pinta o retangulo de preto######################
 pintaPreto:
     lw $s1, 28($sp)                  # y1 = y posicao inicial de y para desenhar o retangulo
@@ -309,12 +299,6 @@ DrawPixel5:
     j     loop11                     # Volta para o loop de desenho
 
    
-#######################Verifica a pos do retangulo###################   
- verificaPos:
-    addi $a0, $t4, 0                 #salva o valor armazenado em uma pos do vetor em $a0
-    beq $a0, 1, excluiRet	     #se a posi��o tiver um retangulo flag =1, ent�o deleta o retangulo
-    jal MoverBola
-    
 #coordenadas x e y de cada linha de blocos:
 #1. x=-28  y = 4
 #2. x= -44  y = 20
@@ -324,10 +308,66 @@ DrawPixel5:
 #6.   x = 250   y = 66
 #7.   x= 290  y= 56
 
+#################Funcoes de colisao para as subidas########################
+#################Funcoes para o movimento de subi 1 da bola################
+ColisaoY7:
+    li $s5, 50
+    
+    j Colisao
 
+
+ColisaoY6:
+    li $s5, 64
+    
+    ble $t8, 60, ColisaoY7          # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao
+
+
+ColisaoY5:
+    li $s5, 78
+    
+    ble $t8, 74, ColisaoY6          # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao
+
+
+ColisaoY4:
+    li $s5, 92
+    
+    ble $t8, 88, ColisaoY5          # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao
+
+
+ColisaoY3:
+    li $s5, 106
+    
+    ble $t8, 102, ColisaoY4          # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao
+
+
+ColisaoY2:
+    li $s5, 120
+    
+    ble $t8, 116, ColisaoY3          # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao
+
+
+ColisaoY1:
+    li $s5, 134
+    
+    ble $t8, 130, ColisaoY2          # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao
+    
+    
+#################Caso nao haja colisao continua o movimento################
 ContinuarMov:
     sw   $s6, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
-    sw   $s7, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
+    sw   $v1, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
     li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
     sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
     
@@ -335,24 +375,30 @@ ContinuarMov:
     j MoverBolaUp
    
 
-
-Colisao:
-    move $s6, $t8
-    move $s7, $t7
+VerificaPassagem:
+    bnez $t5, MoverDown2
     
-    blt  $s6, 129, ContinuarMov
+    j ContinuarMov
+
+
+#######################Verifica se o final da bola vai bater em um bloco####    
+VerificaFinal:
+    move $v1, $t7
+    
+    addi $s7, $s7, 12
     
     jal FindPosY
     jal FindPosX
     jal AcessaLB
     
+    beq $t9, $v0, VerificaPassagem
     beqz $t4, ContinuarMov
     
     li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
     sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
-    li $t8, 144
+    addi $t8, $s5, 10
     sw $t8, 16($sp)
-    sw $t7, 20($sp)
+    sw $v1, 20($sp)
     jal Bola
     
     jal pintaPreto
@@ -367,36 +413,30 @@ Colisao:
     
     j MoverDown2
 
-    
-ContinuarMov2:
-    sw   $s6, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
-    sw   $s7, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
-    li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
-    sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
-    
-    #ble $t8, 144, Colisao            # Se chegou na primeira y dos retangulos veja se vai colidir
-    
-    jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
-    j MoverUp2
-         
-    
-Colisao2:
+
+##############Verifica se ha colisao#####################################
+Colisao:
     move $s6, $t8
     move $s7, $t7
+    move $v1, $t7
+    li $t5, 0
     
-    blt  $s6, 128, ContinuarMov2
+    blt  $s6, $s5, ContinuarMov
     
     jal FindPosY
     jal FindPosX
+    move $v0, $t9
     jal AcessaLB
     
-    beqz $t4, ContinuarMov2 
+    beqz $t4, VerificaFinal
+    
+    li $t5, 1
     
     li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
     sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
-    li $t8, 144
+    addi $t8, $s5, 10
     sw $t8, 16($sp)
-    sw $t7, 20($sp)
+    sw $v1, 20($sp)
     jal Bola
     
     jal pintaPreto
@@ -408,9 +448,162 @@ Colisao2:
     add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
     li $t4, 0
     sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j VerificaFinal
+
+
+#################Funcoes para o movimento de subi 2 da bola################
+ColisaoY72:
+    li $s5, 50
+    
+    j Colisao2
+
+
+ColisaoY62:
+    li $s5, 64
+    
+    ble $t8, 60, ColisaoY72         # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao2
+
+
+ColisaoY52:
+    li $s5, 78
+    
+    ble $t8, 74, ColisaoY62         # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao2
+
+
+ColisaoY42:
+    li $s5, 92
+    
+    ble $t8, 88, ColisaoY52         # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao2
+
+
+ColisaoY32:
+    li $s5, 106
+    
+    ble $t8, 102, ColisaoY42         # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao2
+
+
+ColisaoY22:
+    li $s5, 120
+    
+    ble $t8, 116, ColisaoY32         # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao2
+
+
+ColisaoY12:
+    li $s5, 134
+    
+    ble $t8, 130, ColisaoY22         # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j Colisao2
+
+
+ColisaoUp2:
+    jal Colisao2
+    
     j MoverBolaDown
 
 
+
+#################Caso nao haja colisao continua o movimento################
+ContinuarMov2:
+    sw   $s6, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
+    sw   $v1, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
+    li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
+    sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
+    
+    jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    j MoverUp2
+
+
+VerificaPassagem2:
+    bnez $t5, MoverDown2
+    
+    j ContinuarMov2   
+    
+    
+#######################Verifica se o final da bola vai bater em um bloco###### 
+VerificaFinal2:
+    move $v1, $t7
+    
+    addi $s7, $s7, 12
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beq $t9, $v0, VerificaPassagem2
+    beqz $t4, ContinuarMov2
+    
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j MoverDown2
+         
+
+##############Verifica se ha colisao#####################################    
+Colisao2:
+    move $v0, $ra
+    move $s6, $t8
+    move $s7, $t7
+    move $v1, $t7
+    li $t5, 0
+    
+    blt  $s6, $s5, ContinuarMov2
+    
+    jal FindPosY
+    jal FindPosX
+    move $v0, $t9
+    jal AcessaLB
+    
+    beqz $t4, VerificaFinal2 
+    
+    li $t5, 1
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    j VerificaFinal2
+
+
+#########################Procura a posicao y do retangulo no vetor#########################
 FindPosY:
     move $s3, $ra                    # Guarda o endereco de quem chamou
     li $k1, -1                       # Contador de pos do vetor em y
@@ -419,11 +612,13 @@ FindPosY:
 loop14:
     addi $k1, $k1, 1                 # Move a posicao do vetor
     jal AcessaLY                     # Acessa a posicao $k1 no vetor de y
-    bne $t4, 134, loop14             # Enquanto nao achou o comeco em y continua procurando   
+    bne $t4, $s5, loop14             # Enquanto nao achou o comeco em y continua procurando
     move $s0, $k1                    # Se achou move o valor da posicao para $s0
+    sw $s5, 28($sp)                  # Salva na pilha o y q talvez deva ser pintado de preto
     jr $s3                           # Retorna pra quem chamou
     
-  
+
+#########################Procura a posicao x do retangulo no vetor######################### 
 FindPosX:
     move $s3, $ra                    # Guarda o endereco de quem chamou
     move $k0, $s0                    # Inicia a procura no primeiro y = $t8
@@ -433,21 +628,320 @@ FindPosX:
 loop13:
     addi $k0, $k0, 1
     jal AcessaLX
-    bgt $t7, $t4, loop13             # Enquanto nao achar o x que a bola bate continua a procurar
+    bgt $s7, $t4, loop13             # Enquanto nao achar o x que a bola bate continua a procurar
     subi $k0, $k0, 1
-    jal AcessaLX
-    move $s1, $k0                    # Move para s1 o valor do x igual ou maior q o da bola
+    jal AcessaLX                   # Move para s1 o valor do x igual ou maior q o da bola
     sw $t4, 32($sp)                  # Salva na pilha o x q talvez deva ser pintado de preto
-    li $t8, 134
-    sw $t8, 28($sp)                  # Salva na pilha o y q talvez deva ser pintado de preto
+    move $t9, $t4
     jr $s3                           # Volta pra quem chamou
+    
+
+#################Funcoes de colisao para as descidas########################   
+#################Funcoes para o movimento de desci 1 da bola################
+ColisaoDescidaY7:
+    li $s5, 50
+    
+    bge $t8, 64, ColisaoDescidaY6    # Se chegou na sexta fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida
+
+
+ColisaoDescidaY6:
+    li $s5, 64
+    
+    bge $t8, 78, ColisaoDescidaY5   # Se chegou na quinta fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida
+
+
+ColisaoDescidaY5:
+    li $s5, 78
+    
+    bge $t8, 92, ColisaoDescidaY4    # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida
+
+
+ColisaoDescidaY4:
+    li $s5, 92
+    
+    bge $t8, 106, ColisaoDescidaY3   # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida
+
+
+ColisaoDescidaY3:
+    li $s5, 106
+    
+    bge $t8, 120, ColisaoDescidaY2    # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida
+
+
+ColisaoDescidaY2:
+    li $s5, 120
+    
+    bge $t8, 134, ColisaoDescidaY1    # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida
+
+
+ColisaoDescidaY1:
+    li $s5, 134
+    move $s6, $t8
+    move $s7, $t7
+    move $v1, $t7
+    
+    addi $s1, $s5, 10
+    
+    bgt $t8, $s1, ContinuarMovDescida
+    
+    j ColisaoDescida
+    
+    
+VerificaPassagemDescida:
+    bnez $t5, MoverBolaUp
+    
+    j ContinuarMovDescida 
+    
+    
+#################Caso nao haja colisao continua o movimento################
+ContinuarMovDescida:
+    sw   $s6, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
+    sw   $v1, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
+    li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
+    sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
+    
+    jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    j MoverBolaDown
+   
+
+#######################Verifica se o final da bola vai bater em um bloco####    
+VerificaFinalDescida:
+    move $v1, $t7
+    
+    addi $s7, $s7, 12
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beq $t9, $v0, VerificaPassagemDescida
+    
+    beqz $t4, ContinuarMovDescida
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j MoverBolaUp
+
+
+##############Verifica se ha colisao#####################################
+ColisaoDescida:
+    move $s6, $t8
+    move $s7, $t7
+    move $v1, $t7
+    li $t5, 0
+    
+    blt  $s6, $s5, ContinuarMovDescida
+    
+    jal FindPosY
+    jal FindPosX
+    move $v0, $t9
+    jal AcessaLB
+    
+    beqz $t4, VerificaFinalDescida
+    li $t5, 1
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j VerificaFinalDescida
+
+
+#################Funcoes para o movimento de descida 2 da bola################
+ColisaoDescidaY72:
+    li $s5, 50
+    
+    bge $t8, 64, ColisaoDescidaY62    # Se chegou na sexta fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida2
+
+
+ColisaoDescidaY62:
+    li $s5, 64
+    
+    bge $t8, 78, ColisaoDescidaY52   # Se chegou na quinta fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida2
+
+
+ColisaoDescidaY52:
+    li $s5, 78
+    
+    bge $t8, 92, ColisaoDescidaY42    # Se chegou na quarta fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida2
+
+
+ColisaoDescidaY42:
+    li $s5, 92
+    
+    bge $t8, 106, ColisaoDescidaY32   # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida2
+
+
+ColisaoDescidaY32:
+    li $s5, 106
+    
+    bge $t8, 120, ColisaoDescidaY22    # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida2
+
+
+ColisaoDescidaY22:
+    li $s5, 120
+    
+    bge $t8, 134, ColisaoDescidaY12   # Se chegou nasegunda fileira em y dos retangulos veja se vai colidir
+    
+    j ColisaoDescida2
+
+
+ColisaoDescidaY12:
+    li $s5, 134
+    move $s6, $t8
+    move $s7, $t7
+    move $v1, $t7
+    
+    addi $s1, $s5, 10
+    
+    bgt $t8, $s1, ContinuarMovDescida2
+    
+    j ColisaoDescida2
+    
+    
+VerificaPassagemDescida2:
+    bnez $t5, MoverUp2
+    
+    j ContinuarMovDescida2 
+    
+    
+#################Caso nao haja colisao continua o movimento################
+ContinuarMovDescida2:
+    sw   $s6, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
+    sw   $v1, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
+    li   $t8, 0x00FFFFFF             # Adiciona a cor branca para t8
+    sw   $t8, 12($sp)                # Adiciona a cor de t8 na pilha
+    
+    jal Bola                         # Move pra funcao de pintar a bolinha de novo na tela
+    j MoverDown2
+   
+
+#######################Verifica se o final da bola vai bater em um bloco####    
+VerificaFinalDescida2:
+    move $v1, $t7
+    
+    addi $s7, $s7, 12
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beq $t9, $v0, VerificaPassagemDescida
+    
+    beqz $t4, ContinuarMovDescida2
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j MoverUp2
+
+
+##############Verifica se ha colisao#####################################
+ColisaoDescida2:
+    move $s6, $t8
+    move $s7, $t7
+    move $v1, $t7
+    li $t5, 0
+    
+    bgt  $s6, $s5, ContinuarMovDescida2
+    
+    jal FindPosY
+    jal FindPosX
+    move $v0, $t9
+    jal AcessaLB
+    
+    beqz $t4, VerificaFinalDescida2
+    li $t5, 1
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere�o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere�o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j VerificaFinalDescida2
     
           
 ############Move a bolinha#####################
 MoverBola:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 20                       # Define o tempo para o programa "dormir"
-    #syscall                          # Manda o programa "dormir"
+    li $a0, 30                       # Define o tempo para o programa "dormir"
+    syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -477,8 +971,8 @@ MoverBola:
 ############Move a bolinha Up #####################
 MoverBolaUp:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 20                       # Define o tempo para o programa "dormir"
-    #syscall                          # Manda o programa "dormir"
+    li $a0, 30                       # Define o tempo para o programa "dormir"
+    syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -496,7 +990,7 @@ MoverBolaUp:
     addi $t7,$t7,5		     # soma a posição em x
     blt $t8,37,MoverBolaDown	     # Verifica se a bolinha atingiu o chao
     bgt $t7,429,MoverUp2             # Verifica se a bolinha atingiu o limite da tela a direita
-    ble $t8, 144, Colisao            # Se chegou na primeira y dos retangulos veja se vai colidir
+    ble $t8, 144, ColisaoY1          # Se chegou na primeira y dos retangulos veja se vai colidir
               
              
     sw   $t8, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
@@ -511,8 +1005,8 @@ MoverBolaUp:
 ########Movimento de Descida###########
 MoverBolaDown:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 20                       # Define o tempo para o programa "dormir"
-    #syscall                          # Manda o programa "dormir"
+    li $a0, 30                       # Define o tempo para o programa "dormir"
+    syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -525,13 +1019,13 @@ MoverBolaDown:
     
     lw   $t8, 16($sp)                # Pega o valor de y da bolinha
     lw   $t7, 20($sp)                # Pega o valor de x da bolinha
-    #lw   $a3, 4($sp)		     #Carregando o valor inicial da barra	
     
     addi $t8,$t8,5		     # add em y	
     addi $t7,$t7,5		     # add em x	
    
     bge  $t8,265,verifica	     # Verifica lim do teto
-    bgt $t7,429,MoverDown2 	     # Verifica se a bolinha atingiu o limite da tela a direita	
+    bgt $t7,429,MoverDown2 	     # Verifica se a bolinha atingiu o limite da tela a direita
+    bge $t8, 50, ColisaoDescidaY7
 	         
          
     sw   $t8, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
@@ -544,8 +1038,8 @@ MoverBolaDown:
 
 MoverDown2:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 20                       # Define o tempo para o programa "dormir"
-    #syscall                          # Manda o programa "dormir"
+    li $a0, 30                       # Define o tempo para o programa "dormir"
+    syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -563,7 +1057,8 @@ MoverDown2:
     addi $t8,$t8,5		     # add em y	
     addi $t7,$t7,-5		     # add em x	
     bge  $t8,265,verifica2	     # para
-    blt $t7,-70,MoverBolaDown
+    blt $t7,-60,MoverBolaDown
+    bge $t8, 50, ColisaoDescidaY72
      
               
     sw   $t8, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
@@ -577,8 +1072,8 @@ MoverDown2:
 
 MoverUp2:
     li $v0,32                        # Chama a funcao sleep
-    li $a0, 20                       # Define o tempo para o programa "dormir"
-    #syscall                          # Manda o programa "dormir"
+    li $a0, 30                       # Define o tempo para o programa "dormir"
+    syscall                          # Manda o programa "dormir"
     li $t0, 0xffff0000
     lw $t1, ($t0)
     andi $t1, $t1, 0x0001
@@ -597,7 +1092,7 @@ MoverUp2:
     blt $t8,37,MoverDown2
     bgt $t7,429,MoverUp2
     blt $t7,-70,MoverBolaUp
-    ble $t8, 144, Colisao2           # Se chegou na primeira y dos retangulos veja se vai colidir
+    ble $t8, 144, ColisaoY12         # Se chegou na primeira y dos retangulos veja se vai colidir
              
     sw   $t8, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
     sw   $t7, 20($sp)                # Adiciona a nova posicao em x da bolinha na pilha
