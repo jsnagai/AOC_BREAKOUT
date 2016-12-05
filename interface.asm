@@ -688,6 +688,11 @@ ColisaoDescidaY2:
 
 ColisaoDescidaY1:
     li $s5, 134
+    move $s6, $t8
+    move $s7, $t7
+    move $v1, $t7
+    
+    addi $s1, $s5, 10
     
     bgt $t8, $s1, ContinuarMovDescida
     
@@ -714,7 +719,6 @@ ContinuarMovDescida:
 #######################Verifica se o final da bola vai bater em um bloco####    
 VerificaFinalDescida:
     move $v1, $t7
-    move $t9, $k0
     
     addi $s7, $s7, 12
     
@@ -1053,7 +1057,7 @@ MoverDown2:
     addi $t8,$t8,5		     # add em y	
     addi $t7,$t7,-5		     # add em x	
     bge  $t8,265,verifica2	     # para
-    blt $t7,-70,MoverBolaDown
+    blt $t7,-60,MoverBolaDown
     bge $t8, 50, ColisaoDescidaY72
      
               
