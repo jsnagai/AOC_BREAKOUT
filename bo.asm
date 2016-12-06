@@ -441,7 +441,192 @@ Colisao:
     
     j VerificaFinal
 
+############################## testando as colisoes em X para sobe 1  #############################################3
+ColisaoX17:
+   li $s5, 449
+   
+   ble $t7, 417, ColisaoX16     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX16:
+   li $s5, 417
+   
+   ble $t7, 385, ColisaoX15     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX15:
+   li $s5, 385
+   
+   ble $t7, 353, ColisaoX14     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX14:
+   li $s5, 353
+   
+   ble $t7, 321, ColisaoX13     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX13:
+   li $s5, 321
+   
+   ble $t7, 289, ColisaoX12     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX12:
+   li $s5, 289
+   
+   ble $t7, 257, ColisaoX11     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX11:
+   li $s5, 257
+   
+   ble $t7, 225, ColisaoX10     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX10:
+   li $s5, 225
+   
+   ble $t7, 193, ColisaoX9     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX9:
+   li $s5, 193
+   
+   ble $t7, 161, ColisaoX8     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX8:
+   li $s5, 161
+   
+   ble $t7, 129, ColisaoX16     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX7:
+   li $s5, 129
+   
+   ble $t7, 97, ColisaoX6     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX6:
+   li $s5, 97
+   
+   ble $t7, 65, ColisaoX5     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX5:
+   li $s5, 65
+   
+   ble $t7, 33, ColisaoX4     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX4:
+   li $s5, 33
+   
+   ble $t7, 1 , ColisaoX3    #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX3:
+   li $s5, 1
+   
+   ble $t7, -31, ColisaoX2     #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX2:
+   li $s5, -31
+   
+   ble $t7, -63, ColisaoX1    #se chegou no próximo retangulo
+   
+   j Colisao3
+   
+ColisaoX1:
+   
+   j Colisao3
 
+VerificaFinal3:
+    move $v1, $t8
+    
+    subi $t8, $t8, 10     #adiciona a posicao da bola
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beq $t9, $v0, VerificaPassagem
+    beqz $t4, ContinuarMov
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10 
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere?o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j MoverDown2  
+#############verifica colisao em x###############################
+Colisao3:
+    move $s6, $t8
+    move $s7, $t7
+    addi $t7, $t7, 12        #faz para armazenar a posicao inicial da bola
+    move $v1, $t7
+    subi $t7, $t7, 12        #retorna ao valor inial de t7
+    
+    li $t5, 0
+    
+    blt  $s6, $s5, ContinuarMov
+    
+    jal FindPosY
+    jal FindPosX
+    move $v0, $t9
+    jal AcessaLB
+    
+    beqz $t4, VerificaFinal3
+    
+    li $t5, 1
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere?o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j VerificaFinal3
 #################Funcoes para o movimento de subi 2 da bola################
 ColisaoY72:
     li $s5, 50
@@ -496,198 +681,129 @@ ColisaoY12:
     
     j Colisao2
 
-
+##################Fazendo para X a subida 2 #################################################333333
+ColisaoX217:
+   li $s5, 449
+   
+   ble $t7, 417, ColisaoX216     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX216:
+   li $s5, 417
+   
+   ble $t7, 385, ColisaoX215     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX215:
+   li $s5, 385
+   
+   ble $t7, 353, ColisaoX214     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX214:
+   li $s5, 353
+   
+   ble $t7, 321, ColisaoX213     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX213:
+   li $s5, 321
+   
+   ble $t7, 289, ColisaoX212     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX212:
+   li $s5, 289
+   
+   ble $t7, 257, ColisaoX211     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX211:
+   li $s5, 257
+   
+   ble $t7, 225, ColisaoX210     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX210:
+   li $s5, 225
+   
+   ble $t7, 193, ColisaoX29     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX29:
+   li $s5, 193
+   
+   ble $t7, 161, ColisaoX28     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX28:
+   li $s5, 161
+   
+   ble $t7, 129, ColisaoX216     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX27:
+   li $s5, 129
+   
+   ble $t7, 97, ColisaoX26     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX26:
+   li $s5, 97
+   
+   ble $t7, 65, ColisaoX25     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX25:
+   li $s5, 65
+   
+   ble $t7, 33, ColisaoX24     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX24:
+   li $s5, 33
+   
+   ble $t7, 1 , ColisaoX23    #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX23:
+   li $s5, 1
+   
+   ble $t7, -31, ColisaoX22     #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX22:
+   li $s5, -31
+   
+   ble $t7, -63, ColisaoX21    #se chegou no próximo retangulo
+   
+   j Colisao4
+   
+ColisaoX21:
+   
+   j Colisao4    
+ 
 ColisaoUp2:
     jal Colisao2
     
     j MoverBolaDown
 
-VerificaFinal3:
-    move $v1, $t8
-    
-    addi $t8, $t8, 10     #adiciona a posicao da bola
-    
-    jal FindPosY
-    jal FindPosX
-    jal AcessaLB
-    
-    beq $t9, $v0, VerificaPassagem
-    beqz $t4, ContinuarMov
-    
-    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
-    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
-    addi $t8, $s5, 10
-    sw $t8, 16($sp)
-    sw $v1, 20($sp)
-    jal Bola
-    
-    jal pintaPreto
-    
-    la $t1, listB        # coloca o entere?o em $t3
-    move $t2, $k0	 # coloca o indice em $t2
-    add $t2, $t2, $t2    # dobra o indice
-    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
-    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
-    li $t4, 0
-    sw $t4, 0($t1)       # pega o valor na celula de listB
-    
-    j MoverDown2
-#############verifica colisao em x###############################
-Colisao3:
-    move $s6, $t8
-    move $s7, $t7
-    addi $t7, $t7, 12        #faz para armazenar a posicao inicial da bola
-    move $v1, $t7
-    subi $t7, $t7, 12        #retorna ao valor inial de t7
-    
-    li $t5, 0
-    
-    blt  $s6, $s5, ContinuarMov
-    
-    jal FindPosY
-    jal FindPosX
-    move $v0, $t9
-    jal AcessaLB
-    
-    beqz $t4, VerificaFinal3
-    
-    li $t5, 1
-    
-    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
-    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
-    addi $t8, $s5, 10
-    sw $t8, 16($sp)
-    sw $v1, 20($sp)
-    jal Bola
-    
-    jal pintaPreto
-    
-    la $t1, listB        # coloca o entere?o em $t3
-    move $t2, $k0	 # coloca o indice em $t2
-    add $t2, $t2, $t2    # dobra o indice
-    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
-    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
-    li $t4, 0
-    sw $t4, 0($t1)       # pega o valor na celula de listB
-    
-    j VerificaFinal3
 
-
-ColisaoX17:
-   li $s5, 449
-   
-   ble $t7, 417, ColisaoX16     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
- ColisaoX16:
-   li $s5, 417
-   
-   ble $t7, 385, ColisaoX15     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX15:
-   li $s5, 385
-   
-   ble $t7, 353, ColisaoX14     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX14:
-   li $s5, 353
-   
-   ble $t7, 321, ColisaoX13     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX13:
-   li $s5, 321
-   
-   ble $t7, 289, ColisaoX12     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX12:
-   li $s5, 289
-   
-   ble $t7, 257, ColisaoX11     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX11:
-   li $s5, 257
-   
-   ble $t7, 225, ColisaoX10     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX10:
-   li $s5, 225
-   
-   ble $t7, 193, ColisaoX9     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX9:
-   li $s5, 193
-   
-   ble $t7, 161, ColisaoX8     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX8:
-   li $s5, 161
-   
-   ble $t7, 129, ColisaoX16     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX7:
-   li $s5, 129
-   
-   ble $t7, 97, ColisaoX6     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX6:
-   li $s5, 97
-   
-   ble $t7, 65, ColisaoX5     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX5:
-   li $s5, 65
-   
-   ble $t7, 33, ColisaoX4     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX4:
-   li $s5, 33
-   
-   ble $t7, 1 , ColisaoX3    #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-ColisaoX3:
-   li $s5, 1
-   
-   ble $t7, -31, ColisaoX2     #se chegou no próximo retangulo
-   
-   j Colisao3
-   
- ColisaoX2:
-   li $s5, -31
-   
-   ble $t7, -63, ColisaoX1    #se chegou no próximo retangulo
-   
-   j Colisao3
-   
-   ColisaoX1:
-   
-   j Colisao3
    
 #################Caso nao haja colisao continua o movimento################
 ContinuarMov2:
@@ -777,7 +893,76 @@ Colisao2:
     sw $t4, 0($t1)       # pega o valor na celula de listB
     j VerificaFinal2
 
-
+############################# verifica se o final da bolinha bate em um bloco - p/ x ########################################
+VerificaFinal4:
+    move $v1, $t8
+    
+    subi $t8, $t8, 10     #adiciona a posicao da bola
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beq $t9, $v0, VerificaPassagem
+    beqz $t4, ContinuarMov
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere?o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j MoverDown2
+#######################implementa colisão 4, para sobre 2 de X #########################################
+Colisao4:
+    move $s6, $t8
+    move $s7, $t7
+    addi $t7, $t7, 12        #faz para armazenar a posicao inicial da bola
+    move $v1, $t7
+    subi $t7, $t7, 12        #retorna ao valor inial de t7
+    
+    li $t5, 0
+    
+    blt  $s6, $s5, ContinuarMov
+    
+    jal FindPosY
+    jal FindPosX
+    move $v0, $t9
+    jal AcessaLB
+    
+    beqz $t4, VerificaFinal4
+    
+    li $t5, 1
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere?o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j VerificaFinal4
 #########################Procura a posicao y do retangulo no vetor#########################
 FindPosY:
     move $s3, $ra                    # Guarda o endereco de quem chamou
@@ -832,7 +1017,7 @@ loop16:
     
 
 #################Funcoes de colisao para as descidas########################   
-
+ 
 #################Funcoes para o movimento de desci 1 da bola################
 ColisaoDescidaY7:
     li $s5, 50
@@ -895,7 +1080,7 @@ VerificaPassagemDescida:
     
     j ContinuarMovDescida 
     
-    
+
 #################Caso nao haja colisao continua o movimento################
 ContinuarMovDescida:
     sw   $s6, 16($sp)                # Adiciona a nova posicao em y da bolinha na pilha
@@ -978,6 +1163,193 @@ ColisaoDescida:
     
     j VerificaFinalDescida
 
+######################### função de descida 1 para x #################################################   
+ColisaoDescida3:
+    move $s6, $t8
+    move $s7, $t7
+    addi $t7, $t7, 12        #faz para armazenar a posicao inicial da bola
+    move $v1, $t7
+    subi $t7, $t7, 12        #retorna ao valor inial de t7
+    
+    li $t5, 0
+    
+    blt  $s6, $s5, ContinuarMovDescida
+    
+    jal FindPosY
+    jal FindPosX
+    move $v0, $t9
+    jal AcessaLB
+    
+    beqz $t4, VerificaFinalDescida3
+    
+    li $t5, 1
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere?o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j VerificaFinalDescida3
+
+################## verifica o final da bolinha p/ x na descida 1 #########################################3
+VerificaFinalDescida3:
+    move $v1, $t8
+    
+    subi $t8, $t8, 10     #subtrai a posicao da bola
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beq $t9, $v0, VerificaPassagemDescida
+    beqz $t4, ContinuarMovDescida
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere?o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j MoverBolaUp
+ ########################faz as colisões para X na descida 1##########################################
+ColisaoDescidaX17:
+    li $s5, 449
+  
+    ble $t8, 417, ColisaoDescidaX16    
+    
+    j ColisaoDescida3   
+    
+ColisaoDescidaX16:
+    li $s5, 417
+  
+    ble $t8, 385, ColisaoDescidaX15    
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX15:
+    li $s5, 385
+  
+    ble $t8, 353, ColisaoDescidaX14    
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX14:
+    li $s5, 353
+  
+    ble $t8, 321, ColisaoDescidaX13   
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX13:
+    li $s5, 321
+  
+    ble $t8, 289, ColisaoDescidaX12   
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX12:
+    li $s5, 289
+  
+    ble $t8, 257, ColisaoDescidaX11    
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX11:
+    li $s5, 257
+  
+    ble $t8, 225, ColisaoDescidaX10
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX10:
+    li $s5, 225
+  
+    ble $t8, 193, ColisaoDescidaX9   
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX9:
+    li $s5, 193
+  
+    ble $t8, 161, ColisaoDescidaX8  
+    
+    j ColisaoDescida3       
+    
+ColisaoDescidaX8:
+    li $s5, 161
+  
+    ble $t8, 129, ColisaoDescidaX7  
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX7:
+    li $s5, 129
+  
+    ble $t8, 97, ColisaoDescidaX6    
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX6:
+    li $s5, 97
+  
+    ble $t8, 65, ColisaoDescidaX5    
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX5:
+    li $s5, 65
+  
+    ble $t8, 33, ColisaoDescidaX4 
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX4:
+    li $s5, 33
+  
+    ble $t8, 1, ColisaoDescidaX3    
+    
+    j ColisaoDescida3 
+    
+ColisaoDescidaX3:
+    li $s5, 1
+  
+    ble $t8, -31, ColisaoDescidaX2    
+    
+    j ColisaoDescida3 
+        
+ColisaoDescidaX2:
+    li $s5, -31
+  
+    ble $t8, -63, ColisaoDescidaX1   
+    
+    j ColisaoDescida3
+    
+ColisaoDescidaX1:      ##se chegou ao limite da tela, faço um jump para a colisao
+    
+    j ColisaoDescida3  
 
 #################Funcoes para o movimento de descida 2 da bola################
 ColisaoDescidaY72:
@@ -1128,7 +1500,193 @@ ColisaoDescida2:
     
     j VerificaFinalDescida2
     
-          
+   ########################faz as colisões para X na descida 2##########################################
+ColisaoDescidaX217:
+    li $s5, 449
+  
+    ble $t8, 417, ColisaoDescidaX216    
+    
+    j ColisaoDescida4   
+    
+ColisaoDescidaX216:
+    li $s5, 417
+  
+    ble $t8, 385, ColisaoDescidaX215    
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX215:
+    li $s5, 385
+  
+    ble $t8, 353, ColisaoDescidaX214    
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX214:
+    li $s5, 353
+  
+    ble $t8, 321, ColisaoDescidaX213   
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX213:
+    li $s5, 321
+  
+    ble $t8, 289, ColisaoDescidaX212   
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX212:
+    li $s5, 289
+  
+    ble $t8, 257, ColisaoDescidaX211    
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX211:
+    li $s5, 257
+  
+    ble $t8, 225, ColisaoDescidaX210
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX210:
+    li $s5, 225
+  
+    ble $t8, 193, ColisaoDescidaX29   
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX29:
+    li $s5, 193
+  
+    ble $t8, 161, ColisaoDescidaX28  
+    
+    j ColisaoDescida4       
+    
+ColisaoDescidaX28:
+    li $s5, 161
+  
+    ble $t8, 129, ColisaoDescidaX27  
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX27:
+    li $s5, 129
+  
+    ble $t8, 97, ColisaoDescidaX26    
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX26:
+    li $s5, 97
+  
+    ble $t8, 65, ColisaoDescidaX25    
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX25:
+    li $s5, 65
+  
+    ble $t8, 33, ColisaoDescidaX24 
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX24:
+    li $s5, 33
+  
+    ble $t8, 1, ColisaoDescidaX23    
+    
+    j ColisaoDescida4 
+    
+ColisaoDescidaX23:
+    li $s5, 1
+  
+    ble $t8, -31, ColisaoDescidaX22    
+    
+    j ColisaoDescida4
+        
+ColisaoDescidaX22:
+    li $s5, -31
+  
+    ble $t8, -63, ColisaoDescidaX21   
+    
+    j ColisaoDescida4
+    
+ColisaoDescidaX21:      ##se chegou ao limite da tela, faço um jump para a colisao
+    
+    j ColisaoDescida4
+############################ colisão em x para a descida 2 #####################################################################3
+ColisaoDescida4:
+    move $s6, $t8
+    move $s7, $t7
+    addi $t7, $t7, 12        #faz para armazenar a posicao inicial da bola
+    move $v1, $t7
+    subi $t7, $t7, 12        #retorna ao valor inial de t7
+    
+    li $t5, 0
+    
+    blt  $s6, $s5, ContinuarMovDescida
+    
+    jal FindPosY
+    jal FindPosX
+    move $v0, $t9
+    jal AcessaLB
+    
+    beqz $t4, VerificaFinal4
+    
+    li $t5, 1
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere?o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j VerificaFinalDescida4
+    
+############################ verifica o final da bolinha para a descida 2 x ########################################        
+VerificaFinalDescida4:
+    move $v1, $t8
+    
+    subi $t8, $t8, 10     #adiciona a posicao da bola
+    
+    jal FindPosY
+    jal FindPosX
+    jal AcessaLB
+    
+    beq $t9, $v0, VerificaPassagemDescida2
+    beqz $t4, ContinuarMovDescida2
+    
+    li $t8, 0x00FFFFFF              # Adiciona a cor branca para t8
+    sw $t8, 12($sp)                 # Adiciona a cor de t8 para a pilha
+    addi $t8, $s5, 10
+    sw $t8, 16($sp)
+    sw $v1, 20($sp)
+    jal Bola
+    
+    jal pintaPreto
+    
+    la $t1, listB        # coloca o entere?o em $t3
+    move $t2, $k0	 # coloca o indice em $t2
+    add $t2, $t2, $t2    # dobra o indice
+    add $t2, $t2, $t2    # dobra o indice de novo (4x agora)
+    add $t1, $t2, $t1    # Combina os 2 componentes do endere?o
+    li $t4, 0
+    sw $t4, 0($t1)       # pega o valor na celula de listB
+    
+    j MoverUp2
 ############Move a bolinha#####################
 MoverBola:
     li $v0,32                        # Chama a funcao sleep
