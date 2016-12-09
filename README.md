@@ -4,8 +4,8 @@ Este repositório é referente ao trabalho desenvolvido ao longo da matéria de 
 
 Docente: Profº.Dr.Fábio Augusto Cappabianco
 
-Discentes :	@robl-25
-			@jsnagai
-			@rShigenari
-			@DuHonorato
+Discentes :	@github.com/robl-25
+			@github.com/jsnagai
+			@github.com/rShigenari
+			@github.com/DuHonorato
 
